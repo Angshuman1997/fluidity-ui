@@ -29,17 +29,18 @@ function App() {
               <span className="small">
                 A step by step recepe to make delicious drinks.
               </span>
+              <LetsDrinkBtn
+                touched={touched}
+                onTouchEnd={() => setTouched(true)}
+              >
+                <span>Let's Drink !!!</span>
+              </LetsDrinkBtn>
             </TxtContent>
             <BannerImage>
               <img src={logo} alt="banner" />
             </BannerImage>
           </MContent>
         </MiddleContent>
-        <BottomContent style={{ height: "15vh" }}>
-          <LetsDrinkBtn touched={touched} onTouchEnd={() => setTouched(true)}>
-            <span>Let's Drink !!!</span>
-          </LetsDrinkBtn>
-        </BottomContent>
       </Compo>
     </AppStyle>
   );
@@ -97,15 +98,6 @@ const MiddleContent = styled.div`
   justify-content: center;
 `;
 
-
-
-const BottomContent = styled.div`
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const LetsDrinkBtn = styled.button`
   background: #ffffff;
   border: 0.1rem solid #ffffff;
@@ -117,15 +109,34 @@ const LetsDrinkBtn = styled.button`
   transition: 0.3s;
   padding: 0.5rem;
   font-size: 1.2rem;
+  width: 10rem;
+  height: 4rem;
+  margin-top: 3rem;
+  @media screen and (max-width: 480px) {
+    width: 7rem;
+    height: 2rem;
+    margin-top: 2rem;
+  }
+  @media screen and (min-width: 1500px) {
+    width: 15rem;
+    height: 6rem;
+  }
+
   span {
     font-family: Bahnschrift SemiBold;
     margin: 0;
+    @media screen and (max-width: 480px) {
+      font-size: 0.8rem;
+    }
+
+    @media screen and (min-width: 1500px) {
+      font-size: 2rem;
+    }
   }
 
   &:hover {
-    padding: ${(props) => (props.touched ? "0.5rem" : "0.5rem")};
     transition: 0.3s;
-    font-size: ${(props) => (props.touched ? "1.2rem" : "1.5rem")};
+    font-size: ${(props) => (props.touched ? "1.2rem" : "1.3rem")};
   }
 `;
 
