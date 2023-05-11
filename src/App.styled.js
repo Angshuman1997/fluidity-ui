@@ -6,6 +6,4 @@ min-height: 100vh;
 width: 100vw;
 height: 100vh;
 display: flex;
-overflow-x: hidden;
-position: fixed;
 `;
