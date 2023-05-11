@@ -7,14 +7,28 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
-export default function ModCard({ drinkData }) {
-
+export default function ModCard({ image, name }) {
   return (
-    <Card sx={{ display: "flex" }}>
+    <Card
+      sx={{
+        display: "flex",
+        width: "25rem",
+        height: "10rem",
+        alignItems: "center",
+        justifyContent: "space-between",
+        "@media screen and (max-width: 480px)": {
+          width: "18rem",
+        },
+
+        "@media screen and (max-width: 300px)": {
+          width: "15rem",
+        },
+      }}
+    >
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
           <Typography component="div" variant="h5">
-            {drinkData?.name}
+            {name}
           </Typography>
         </CardContent>
         <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
@@ -25,8 +39,15 @@ export default function ModCard({ drinkData }) {
       </Box>
       <CardMedia
         component="img"
-        sx={{ width: 151 }}
-        image={drinkData?.image}
+        sx={{
+          width: "8rem",
+          height: "8rem",
+          margin: "0 1rem 0 0",
+          borderRadius: "0.8rem",
+          boxShadow:
+            "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+        }}
+        image={image}
         alt="Live from space album cover"
       />
     </Card>

@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaWineBottle } from "react-icons/fa";
 import ThemeSwitch from "../../components/ThemeSwitch/ThemeSwitch";
 import { styled } from "styled-components";
 import ModCard from "../../components/ModCard/ModCard";
+import axios from "axios";
 
 const MainPage = () => {
+  const [drinksData, setDrinksData] = useState([]);
+  const getData = () => {
+    axios
+      .get("https://api-fludty.onrender.com/drinks")
+      .then((response) => {
+        setDrinksData(response.data.data);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <Compo>
       <TopContent>
@@ -19,10 +34,15 @@ const MainPage = () => {
         </ThemeFeature>
       </TopContent>
       <MiddleContent>
-      <Card><ModCard /></Card>
-      <Card><ModCard /></Card>
-      <Card><ModCard /></Card>
-      <Card><ModCard /></Card>
+        {drinksData.length > 0 &&
+          Object.keys(drinksData).map((i, index) => {
+            const data = JSON.parse(drinksData[i]);
+            return (
+              <Card key={`${i}-${index}`}>
+                <ModCard image={data.image} name={data.name} />
+              </Card>
+            );
+          })}
       </MiddleContent>
     </Compo>
   );
@@ -41,6 +61,8 @@ const Compo = styled.div`
   width: 100%;
   padding: 0 1rem;
   color: #ffffff !important;
+  overflow-x: hidden;
+  overflow-y: scroll;
 `;
 
 const TopContent = styled.div`
@@ -77,5 +99,5 @@ const MiddleContent = styled.div`
 `;
 
 const Card = styled.div`
-padding: 1rem;
+  padding: 1rem;
 `;
