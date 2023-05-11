@@ -17,6 +17,7 @@ const MainPage = () => {
   };
 
   useEffect(() => {
+    // api function
     getData();
   }, []);
 
