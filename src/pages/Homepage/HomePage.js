@@ -1,47 +1,54 @@
-import React from 'react';
+import React from "react";
 import { FaWineBottle } from "react-icons/fa";
 import ThemeSwitch from "../../components/ThemeSwitch/ThemeSwitch";
 import bannerImg from "../../assets/images/banner_image.png";
 import { useState } from "react";
 import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-    const [touched, setTouched] = useState(false);
+  const navigate = useNavigate();
+  const [touched, setTouched] = useState(false);
+
   return (
     <Compo>
-        <TopContent>
-          <LogoTxt>
-            <span className="logo">
-              <FaWineBottle size={30} />
+      <TopContent>
+        <LogoTxt>
+          <span className="logo">
+            <FaWineBottle size={30} />
+          </span>
+          <span className="text">FluDtY</span>
+        </LogoTxt>
+        <ThemeFeature>
+          <ThemeSwitch />
+        </ThemeFeature>
+      </TopContent>
+      <MiddleContent>
+        <MContent>
+          <TxtContent>
+            <span className="large">Make your own drinks at home</span>
+            <span className="small">
+              A step by step recepe to make delicious drinks.
             </span>
-            <span className="text">FluDtY</span>
-          </LogoTxt>
-          <ThemeFeature>
-            <ThemeSwitch />
-          </ThemeFeature>
-        </TopContent>
-        <MiddleContent>
-          <MContent>
-            <TxtContent>
-              <span className="large">Make your own drinks at home</span>
-              <span className="small">
-                A step by step recepe to make delicious drinks.
-              </span>
-              <LetsDrinkBtn
-                touched={touched}
-                onTouchEnd={() => setTouched(true)}
-              >
-                <span>Let's Drink !!!</span>
-              </LetsDrinkBtn>
-            </TxtContent>
-            <BannerImage>
-              <img src={bannerImg} alt="banner" />
-            </BannerImage>
-          </MContent>
-        </MiddleContent>
-      </Compo>
-  )
-}
+            <LetsDrinkBtn
+              touched={touched}
+              onClick={() => navigate("/login")}
+              onTouchEnd={() => {
+                navigate("/login");
+                setTouched(true);
+              }}
+            >
+              <span>Let's Drink !!!</span>
+            </LetsDrinkBtn>
+          </TxtContent>
+          <BannerImage>
+            <img src={bannerImg} alt="banner" />
+          </BannerImage>
+        </MContent>
+      </MiddleContent>
+    </Compo>
+  );
+};
 
 export default HomePage;
 
