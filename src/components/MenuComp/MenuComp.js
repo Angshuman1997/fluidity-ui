@@ -35,9 +35,7 @@ export default function MenuComp() {
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
-        onTouchEnd={handleClick}
-      >
+        onClick={handleClick}>
         <MenuIcon sx={{ color: "#ffffff", width: "2rem", height: "2rem" }} />
       </Button>
       <Menu
@@ -54,7 +52,7 @@ export default function MenuComp() {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleLogout} onTouchEnd={handleLogout} >
+        <MenuItem onClick={handleLogout} >
           <Content>
             <Logo>
               <LogoutIcon />
