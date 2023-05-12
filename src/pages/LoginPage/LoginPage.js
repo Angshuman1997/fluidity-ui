@@ -1,9 +1,86 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaWineBottle } from "react-icons/fa";
 import ThemeSwitch from "../../components/ThemeSwitch/ThemeSwitch";
 import { styled } from "styled-components";
+import axios from "axios";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const [loginType, setLoginType] = useState("login");
+  const [loginInfo, setLoginInfo] = useState({
+    userid: "",
+    password: "",
+    email: "",
+    name: "",
+    regpassword: "",
+    newpassword: "",
+    showNewpassword: false,
+    showPassword: false,
+    showRegpassword: false,
+  });
+
+  const handleChange = (prop) => (event) => {
+    console.log(event.target.value);
+    setLoginInfo({ ...loginInfo, [prop]: event.target.value });
+  };
+
+  const handleClickShowPassword = () => {
+    setLoginInfo({
+      ...loginInfo,
+      showPassword: !loginInfo.showPassword,
+    });
+  };
+
+  const handleClickShowRegPassword = () => {
+    setLoginInfo({
+      ...loginInfo,
+      showRegpassword: !loginInfo.showRegpassword,
+    });
+  };
+
+  const handleClickShowNewPassword = () => {
+    setLoginInfo({
+      ...loginInfo,
+      showNewpassword: !loginInfo.showNewpassword,
+    });
+  };
+
+  const handleRegister = () => {
+    setLoginType("register");
+    setLoginInfo({
+      userid: "",
+      password: "",
+      email: "",
+      name: "",
+      regpassword: "",
+      newpassword: "",
+      showNewpassword: false,
+      showPassword: false,
+      showRegpassword: false,
+    });
+  };
+
+  const handleFP = () => {
+    console.log("FP");
+  };
+
+  const loginAction = () => {
+    const formData = new FormData();
+    formData.append("userid", loginInfo.userid);
+    formData.append("password", loginInfo.password);
+    formData.append("login_type", "login");
+    axios
+      .post("https://api-fludty.onrender.com/login", formData)
+      .then((response) => {
+        sessionStorage.setItem("fludtyTok", response.data.token);
+        alert("Logined In");
+        navigate("/main");
+      })
+      .catch((error) => alert(error.message));
+  };
+
   return (
     <Compo>
       <TopContent>
@@ -21,51 +98,118 @@ const LoginPage = () => {
         <Form>
           <FormContent>
             <FormTitle>Sign In</FormTitle>
-            <FieldSection>
-              <Label>Email address</Label>
-              <input
-                type="email"
-                className="form-control mt-1"
-                placeholder="Enter email"
-              />
-            </FieldSection>
+            {loginType === "register" && (
+              <FieldSection>
+                <Label>Name</Label>
+                <input
+                  type="text"
+                  className="form-control mt-1"
+                  placeholder="Enter Name"
+                  value={loginInfo.name}
+                  onChange={handleChange("name")}
+                />
+              </FieldSection>
+            )}
+            {loginType === "register" && (
+              <FieldSection>
+                <Label>Email address</Label>
+                <input
+                  type="email"
+                  className="form-control mt-1"
+                  placeholder="Enter email"
+                  value={loginInfo.email}
+                  onChange={handleChange("email")}
+                />
+              </FieldSection>
+            )}
             <FieldSection>
               <Label>User Id</Label>
               <input
                 type="text"
                 className="form-control mt-1"
-                placeholder="Enter email"
+                placeholder="Enter useid"
+                value={loginInfo.userid}
+                onChange={handleChange("userid")}
               />
             </FieldSection>
-            <FieldSection>
-              <Label>Password</Label>
-              <input
-                type="password"
-                className="form-control mt-1"
-                placeholder="Enter password"
-              />
-            </FieldSection>
-            <FieldSection>
-              <Label>Confirm Password</Label>
-              <input
-                type="password"
-                className="form-control mt-1"
-                placeholder="Enter smae password"
-              />
-            </FieldSection>
+            {loginType !== "register" && (
+              <FieldSection>
+                <Label>Password</Label>
+                <input
+                  type={loginInfo.showPassword ? "text" : "password"}
+                  className="form-control mt-1"
+                  placeholder="Enter password"
+                  value={loginInfo.password}
+                  onChange={handleChange("password")}
+                />
+                <button
+                  type="button"
+                  onClick={handleClickShowPassword}
+                  onTouchEnd={handleClickShowPassword}
+                >
+                  <RemoveRedEyeIcon />
+                </button>
+              </FieldSection>
+            )}
+            {loginType === "register" && (
+              <FieldSection>
+                <Label>Add Password</Label>
+                <input
+                  type={loginInfo.showRegpassword ? "text" : "password"}
+                  className="form-control mt-1"
+                  placeholder="Enter same password"
+                  value={loginInfo.regpassword}
+                  onChange={handleChange("regpassword")}
+                />
+                <button
+                  type="button"
+                  onClick={handleClickShowRegPassword}
+                  onTouchEnd={handleClickShowRegPassword}
+                >
+                  <RemoveRedEyeIcon />
+                </button>
+              </FieldSection>
+            )}
+            {loginType === "register" && (
+              <FieldSection>
+                <Label>Confirm Password</Label>
+                <input
+                  type={loginInfo.showNewpassword ? "text" : "password"}
+                  className="form-control mt-1"
+                  placeholder="Enter smae password"
+                  value={loginInfo.newpassword}
+                  onChange={handleChange("newpassword")}
+                />
+                <button
+                  type="button"
+                  onClick={handleClickShowNewPassword}
+                  onTouchEnd={handleClickShowNewPassword}
+                >
+                  <RemoveRedEyeIcon />
+                </button>
+              </FieldSection>
+            )}
             <FieldBtnSection>
               <SubmitBtn
                 type="button"
                 className="btn btn-primary"
-                onClick={() => alert("Submitted !!!")}
+                onClick={loginAction}
               >
                 Submit
               </SubmitBtn>
             </FieldBtnSection>
           </FormContent>
           <LoginOption>
-            <ForgetBtn>Forgot Password ?</ForgetBtn>
-            <RegisterBtn>Register</RegisterBtn>
+            <ForgetBtn type="button" onClick={handleFP} onTouchEnd={handleFP}>
+              Forgot Password ?
+            </ForgetBtn>
+            <RegisterBtn
+              type="button"
+              onClick={handleRegister}
+              onTouchEnd={handleRegister}
+            >
+              Register
+            </RegisterBtn>
           </LoginOption>
         </Form>
       </MiddleContent>

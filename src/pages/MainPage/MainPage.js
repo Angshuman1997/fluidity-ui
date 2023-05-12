@@ -4,12 +4,23 @@ import ThemeSwitch from "../../components/ThemeSwitch/ThemeSwitch";
 import { styled } from "styled-components";
 import ModCard from "../../components/ModCard/ModCard";
 import axios from "axios";
+import PopupModal from "../../components/PopupModal/PopupModal";
 
 const MainPage = () => {
   const [drinksData, setDrinksData] = useState([]);
+  const [openPopup, setOpenPopup] = React.useState(false);
+  const [popupContentId, setPopupContentId] = React.useState("");
+  const handleClose = () => setOpenPopup(false);
   const getData = () => {
+    const formData = new FormData();
+    formData.append("offset", "0");
     axios
-      .get("https://api-fludty.onrender.com/drinks")
+      .get(`${process.env.REACT_APP_API_URI}/drinks`, {
+        headers: {
+          offset: "0",
+          Authorization: sessionStorage.getItem("fludtyTok"),
+        },
+      })
       .then((response) => {
         setDrinksData(response.data.data);
       })
@@ -22,30 +33,45 @@ const MainPage = () => {
   }, []);
 
   return (
-    <Compo>
-      <TopContent>
-        <LogoTxt>
-          <span className="logo">
-            <FaWineBottle size={30} />
-          </span>
-          <span className="text">FluDtY</span>
-        </LogoTxt>
-        <ThemeFeature>
-          <ThemeSwitch />
-        </ThemeFeature>
-      </TopContent>
-      <MiddleContent>
-        {drinksData.length > 0 &&
-          Object.keys(drinksData).map((i, index) => {
-            const data = JSON.parse(drinksData[i]);
-            return (
-              <Card key={`${i}-${index}`}>
-                <ModCard image={data.image} name={data.name} />
-              </Card>
-            );
-          })}
-      </MiddleContent>
-    </Compo>
+    <React.Fragment>
+      <Compo>
+        <TopContent>
+          <LogoTxt>
+            <span className="logo">
+              <FaWineBottle size={30} />
+            </span>
+            <span className="text">FluDtY</span>
+          </LogoTxt>
+          <ThemeFeature>
+            <ThemeSwitch />
+          </ThemeFeature>
+        </TopContent>
+        <MiddleContent>
+          {drinksData.length > 0 &&
+            Object.keys(drinksData).map((i, index) => {
+              const data = JSON.parse(drinksData[i]);
+              return (
+                <Card
+                  key={`${i}-${index}`}
+                  onClick={() => {
+                    setPopupContentId(data._id.$oid);
+                    setOpenPopup(true);
+                  }}
+                >
+                  <ModCard image={data.image} name={data.name} />
+                </Card>
+              );
+            })}
+        </MiddleContent>
+      </Compo>
+      {openPopup && (
+        <PopupModal
+          open={openPopup}
+          handleClose={handleClose}
+          popupContentId={popupContentId}
+        />
+      )}
+    </React.Fragment>
   );
 };
 
@@ -60,10 +86,7 @@ const Compo = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0 1rem;
   color: #ffffff !important;
-  overflow-x: hidden;
-  overflow-y: scroll;
 `;
 
 const TopContent = styled.div`
@@ -72,6 +95,7 @@ const TopContent = styled.div`
   justify-content: space-between;
   background: transparent;
   margin: 0.5rem 0;
+  padding: 0 1rem;
 `;
 
 const LogoTxt = styled.div`
@@ -97,8 +121,11 @@ const MiddleContent = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  overflow-x: hidden;
+  overflow-y: scroll;
 `;
 
 const Card = styled.div`
   padding: 1rem;
+  cursor: pointer;
 `;
