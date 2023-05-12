@@ -1,13 +1,15 @@
-import React, { useState } from "react";
-import { FaWineBottle } from "react-icons/fa";
-import ThemeSwitch from "../../components/ThemeSwitch/ThemeSwitch";
+import React, { useEffect, useState } from "react";
+import { BiDrink } from "react-icons/bi";
 import { styled } from "styled-components";
 import axios from "axios";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { useNavigate } from "react-router-dom";
+import { notificationFunc } from "../../redux/actions/actions";
+import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loginType, setLoginType] = useState("login");
   const [loginInfo, setLoginInfo] = useState({
     userid: "",
@@ -22,7 +24,6 @@ const LoginPage = () => {
   });
 
   const handleChange = (prop) => (event) => {
-    console.log(event.target.value);
     setLoginInfo({ ...loginInfo, [prop]: event.target.value });
   };
 
@@ -63,7 +64,6 @@ const LoginPage = () => {
   };
 
   const handleFP = () => {
-    console.log("FP");
   };
 
   const loginAction = () => {
@@ -72,27 +72,33 @@ const LoginPage = () => {
     formData.append("password", loginInfo.password);
     formData.append("login_type", "login");
     axios
-      .post("https://api-fludty.onrender.com/login", formData)
+      .post(`${process.env.REACT_APP_API_URI}/login`, formData)
       .then((response) => {
         sessionStorage.setItem("fludtyTok", response.data.token);
-        alert("Logined In");
+        dispatch(notificationFunc({ open: true, severity: "success", message: "Login Successful" }));
         navigate("/main");
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {
+        dispatch(notificationFunc({ open: true, severity: "error", message: error.message }));
+      });
   };
+
+  useEffect(()=>{
+    if(sessionStorage.getItem("fludtyTok") !== null) {
+      navigate("/main");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Compo>
       <TopContent>
         <LogoTxt>
           <span className="logo">
-            <FaWineBottle size={30} />
+            <BiDrink size={30} />
           </span>
           <span className="text">FluDtY</span>
         </LogoTxt>
-        <ThemeFeature>
-          <ThemeSwitch />
-        </ThemeFeature>
       </TopContent>
       <MiddleContent>
         <Form>
@@ -256,8 +262,6 @@ const LogoTxt = styled.div`
     align-items: center;
   }
 `;
-
-const ThemeFeature = styled.div``;
 
 const MiddleContent = styled.div`
   background: transparent;

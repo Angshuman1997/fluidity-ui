@@ -1,6 +1,5 @@
 import React from "react";
-import { FaWineBottle } from "react-icons/fa";
-import ThemeSwitch from "../../components/ThemeSwitch/ThemeSwitch";
+import { BiDrink } from "react-icons/bi";
 import bannerImg from "../../assets/images/banner_image.png";
 import { useState } from "react";
 import { styled } from "styled-components";
@@ -15,13 +14,10 @@ const HomePage = () => {
       <TopContent>
         <LogoTxt>
           <span className="logo">
-            <FaWineBottle size={30} />
+            <BiDrink size={30} />
           </span>
           <span className="text">FluDtY</span>
         </LogoTxt>
-        <ThemeFeature>
-          <ThemeSwitch />
-        </ThemeFeature>
       </TopContent>
       <MiddleContent>
         <MContent>
@@ -91,8 +87,6 @@ const LogoTxt = styled.div`
     align-items: center;
   }
 `;
-
-const ThemeFeature = styled.div``;
 
 const MiddleContent = styled.div`
   height: 100%;

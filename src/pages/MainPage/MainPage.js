@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { FaWineBottle } from "react-icons/fa";
-import ThemeSwitch from "../../components/ThemeSwitch/ThemeSwitch";
+import { BiDrink } from "react-icons/bi";
 import { styled } from "styled-components";
 import ModCard from "../../components/ModCard/ModCard";
 import axios from "axios";
 import PopupModal from "../../components/PopupModal/PopupModal";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { notificationFunc } from "../../redux/actions/actions";
+import MenuComp from "../../components/MenuComp/MenuComp";
 
 const MainPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [drinksData, setDrinksData] = useState([]);
   const [openPopup, setOpenPopup] = React.useState(false);
   const [popupContentId, setPopupContentId] = React.useState("");
@@ -22,14 +27,26 @@ const MainPage = () => {
         },
       })
       .then((response) => {
-        setDrinksData(response.data.data);
+        if (response.status === 440 || response.status === 401) {
+          dispatch(notificationFunc({ open: true, severity: "error", message: response.status === 440 ? "Session Expired" : "Something Went Wrong" }));
+          navigate("/login");
+        } else {
+          setDrinksData(response.data.data);
+        }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        if (error.response.status === 401 || error.response.status === 440) {
+          dispatch(notificationFunc({ open: true, severity: "error", message: error.response.status === 440 ? "Session Expired" : "Something Went Wrong" }));
+          navigate("/login");
+        } else {
+          dispatch(notificationFunc({ open: true, severity: "error", message: error.message }));
+        }
+      });
   };
 
   useEffect(() => {
-    // api function
     getData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -38,13 +55,13 @@ const MainPage = () => {
         <TopContent>
           <LogoTxt>
             <span className="logo">
-              <FaWineBottle size={30} />
+              <BiDrink size={30} />
             </span>
             <span className="text">FluDtY</span>
           </LogoTxt>
-          <ThemeFeature>
-            <ThemeSwitch />
-          </ThemeFeature>
+          <MenuFeature>
+            <MenuComp />
+          </MenuFeature>
         </TopContent>
         <MiddleContent>
           {drinksData.length > 0 &&
@@ -115,7 +132,7 @@ const LogoTxt = styled.div`
   }
 `;
 
-const ThemeFeature = styled.div``;
+const MenuFeature = styled.div``;
 
 const MiddleContent = styled.div`
   display: flex;

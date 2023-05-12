@@ -6,8 +6,13 @@ import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { notificationFunc } from "../../redux/actions/actions";
 
 export default function PopupModal({ open, handleClose, popupContentId }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [content, setContent] = React.useState(null);
@@ -21,16 +26,18 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
       })
       .then((response) => {
         if(response.status === 440 || response.status === 401) {
-          console.log("re direct to login");
+          dispatch(notificationFunc({ open: true, severity: "error", message: response.status === 440 ? "Session Expired" : "Something Went Wrong" }));
+          navigate("/login");
         } else {
           setContent(JSON.parse(response.data.data));
         }        
       })
       .catch((error) => {
         if(error.response.status === 401 || error.response.status === 440) {
-          console.log("re direct to login");
+          dispatch(notificationFunc({ open: true, severity: "error", message: error.response.status === 440 ? "Session Expired" : "Something Went Wrong" }));
+          navigate("/login");
         } else{
-          console.log("notify error message");
+          dispatch(notificationFunc({ open: true, severity: "error", message: error.message }));
         }
       });
   };

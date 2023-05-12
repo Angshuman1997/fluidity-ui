@@ -9,10 +9,24 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { notificationFunc } from "./redux/actions/actions";
+import { useSelector, useDispatch } from "react-redux";
 
 function App() {
   const [openNotify, setOpenNotify] = useState(false);
+  const dispatch = useDispatch();
+  const { notification } = useSelector((state) => state);
+
+  useEffect(() => {
+    if (notification?.open) {
+      setOpenNotify(true);
+      setTimeout(() => {
+        dispatch(notificationFunc({}));
+      }, 4000);
+    }
+  }, [dispatch, notification]);
+
   return (
     <AppStyle>
       <Router>
@@ -23,7 +37,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
-      <Notification open={openNotify} setOpen={setOpenNotify} severity={"success"} message={"Success"}/>
+      {notification?.open && <Notification open={openNotify} setOpen={setOpenNotify} severity={notification.severity} message={notification.message}/>}
     </AppStyle>
   );
 }
