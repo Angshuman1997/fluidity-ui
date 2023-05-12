@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { notificationFunc } from "../../redux/actions/actions";
 import MenuComp from "../../components/MenuComp/MenuComp";
+import SkeletonLoader from "../../components/SkeletonLoader/SkeletonLoader";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -64,21 +65,21 @@ const MainPage = () => {
           </MenuFeature>
         </TopContent>
         <MiddleContent>
-          {drinksData.length > 0 &&
-            Object.keys(drinksData).map((i, index) => {
-              const data = JSON.parse(drinksData[i]);
-              return (
-                <Card
-                  key={`${i}-${index}`}
-                  onClick={() => {
-                    setPopupContentId(data._id.$oid);
-                    setOpenPopup(true);
-                  }}
-                >
-                  <ModCard image={data.image} name={data.name} />
-                </Card>
-              );
-            })}
+        {drinksData.length > 0 ?
+          Object.keys(drinksData).map((i, index) => {
+            const data = JSON.parse(drinksData[i]);
+            return (
+              <Card
+                key={`${i}-${index}`}
+                onClick={() => {
+                  setPopupContentId(data._id.$oid);
+                  setOpenPopup(true);
+                }}
+              >
+                <ModCard image={data.image} name={data.name} />
+              </Card>
+            );
+          }) : <SkeletonLoader />}
         </MiddleContent>
       </Compo>
       {openPopup && (
