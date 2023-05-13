@@ -18,8 +18,7 @@ const MainPage = () => {
   const [popupContentId, setPopupContentId] = React.useState("");
   const handleClose = () => setOpenPopup(false);
   const getData = () => {
-    const formData = new FormData();
-    formData.append("offset", "0");
+  
     axios
       .get(`${process.env.REACT_APP_API_URI}/drinks`, {
         headers: {
@@ -65,7 +64,7 @@ const MainPage = () => {
           </MenuFeature>
         </TopContent>
         <MiddleContent>
-        {drinksData.length > 0 ?
+        {drinksData?.length > 0 ?
           Object.keys(drinksData).map((i, index) => {
             const data = JSON.parse(drinksData[i]);
             return (
