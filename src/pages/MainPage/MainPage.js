@@ -132,7 +132,7 @@ const MainPage = () => {
   const handleCloseSearchBar = () => {
     setMobSearch(false);
     enableSer && handleSerRemove();
-  }
+  };
 
   return (
     <React.Fragment>
@@ -299,8 +299,14 @@ const LoadMoreButton = styled.button`
   border: 0.2rem solid #ffffff;
   background: #ffffff;
   font-size: 1.2rem;
-  border-radius: 0.8rem;
+  border-radius: 0.5rem;
   cursor: pointer;
+  padding: 0.3rem;
+  font-weight: 600;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const SearchContent = styled.div`

@@ -3,11 +3,16 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { styled } from "styled-components";
 
 export default function ModCard({ image, name }) {
+  const handleFavClick = (event) => {
+    event.stopPropagation();
+    console.log("here");
+  };
+
   return (
     <Card
       sx={{
@@ -31,10 +36,10 @@ export default function ModCard({ image, name }) {
             {name}
           </Typography>
         </CardContent>
-        <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-          <IconButton aria-label="play/pause">
-            <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-          </IconButton>
+        <Box sx={{ display: "flex", alignItems: "center", pl: 2 }}>
+          <FavBtn onClick={handleFavClick}>
+            <FavoriteBorderIcon />
+          </FavBtn>
         </Box>
       </Box>
       <CardMedia
@@ -53,3 +58,19 @@ export default function ModCard({ image, name }) {
     </Card>
   );
 }
+
+const FavBtn = styled.button`
+border: none;
+background: radial-gradient( circle, rgba(12, 4, 24, 1) 64%, rgba(33, 13, 55, 0.9864320728291317) 100% );
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+color: #ffffff;
+padding: 0.3rem;
+border-radius: 50%;
+  svg {
+    width: 2rem;
+    height: 2rem;
+  }
+`;

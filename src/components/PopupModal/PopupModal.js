@@ -9,6 +9,7 @@ import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { notificationFunc } from "../../redux/actions/actions";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 export default function PopupModal({ open, handleClose, popupContentId }) {
   const navigate = useNavigate();
@@ -73,6 +74,9 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleClickFav = () =>{
+  }
+
   return (
     <Dialog
       fullScreen={fullScreen}
@@ -111,11 +115,14 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
         </Loader>
       ) : (
         <MainContent>
-          <CloseBtnSection>
-            <button onClick={handleClose}>
+          <TopSection>
+            <FavBtn onClick={handleClickFav}>
+              <FavoriteBorderIcon />
+            </FavBtn>
+            <button className="close-btn" onClick={handleClose}>
               <CloseIcon />
             </button>
-          </CloseBtnSection>
+          </TopSection>
           <Content>
             <ImageSection>
               <img src={content.image} alt={`${content.name}-img`} />
@@ -171,17 +178,19 @@ const MainContent = styled.div`
   flex-direction: column;
   height: 100%;
 `;
-const CloseBtnSection = styled.div`
+const TopSection = styled.div`
   display: flex;
   justify-content: flex-end;
   padding: 0.5rem 0.5rem 1rem 0;
-  button {
+  align-items: center;
+  button.close-btn {
     cursor: pointer;
     border: none;
     background: #000000;
     padding: 0.5rem;
     color: #ffffff;
     border-radius: 50%;
+    display: flex;
   }
 `;
 const Content = styled.div`
@@ -241,4 +250,18 @@ const StepHead = styled.div`
 `;
 const StepBody = styled.div`
   font-weight: 600;
+`;
+
+const FavBtn = styled.button`
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0.5rem;
+  color: #000000;
+  border-radius: 50%;
+  display: flex;
+  svg {
+    width: 3rem;
+    height: 2rem;
+  }
 `;
