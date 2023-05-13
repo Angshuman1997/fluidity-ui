@@ -9,10 +9,20 @@ export default function SkeletonLoader() {
       {Object.keys(bodies).map((i, index) => (
         <Loader key={`${i}-${index}`}>
           <Skeleton
-            sx={{ bgcolor: "#645e5e" }}
+            sx={{ 
+              bgcolor: "#645e5e",
+              width: "25rem",
+              height: "10rem",
+              
+              "@media screen and (max-width: 480px)": {
+                width: "18rem",
+              },
+
+              "@media screen and (max-width: 300px)": {
+                width: "15rem",
+              },
+            }}
             variant="rounded"
-            width={300}
-            height={130}
           />
         </Loader>
       ))}

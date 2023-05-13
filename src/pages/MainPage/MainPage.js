@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { notificationFunc } from "../../redux/actions/actions";
 import MenuComp from "../../components/MenuComp/MenuComp";
 import SkeletonLoader from "../../components/SkeletonLoader/SkeletonLoader";
+import SearchBar from "../../components/SearchBar/SearchBar";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ const MainPage = () => {
   const [openPopup, setOpenPopup] = React.useState(false);
   const [offset, setOffset] = React.useState(0);
   const [total, setTotal] = React.useState(0);
+  const [serVal, setSerVal] = React.useState("");
+  const [enableSer, setEnableSer] = React.useState(false);
+  const [serEnt, setSerEnt] = React.useState(false);
   const [popupContentId, setPopupContentId] = React.useState("");
   const handleClose = () => setOpenPopup(false);
   const getData = () => {
@@ -24,7 +28,7 @@ const MainPage = () => {
       .get(`${process.env.REACT_APP_API_URI}/drinks`, {
         headers: {
           offset: `${offset}`,
-          search: "",
+          search: serVal.trim(),
           Authorization: sessionStorage.getItem("fludtyTok"),
         },
       })
@@ -44,7 +48,7 @@ const MainPage = () => {
           navigate("/login");
         } else {
           setTotal(response.data.total);
-          setDrinksData((prev) => [...prev, ...response.data.data]);
+          setDrinksData([...drinksData, ...response.data.data]);
         }
       })
       .catch((error) => {
@@ -82,6 +86,40 @@ const MainPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
 
+  useEffect(() => {
+    if (serEnt) {
+      getData();
+      setSerEnt(false);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serEnt]);
+
+  const handleChange = (event) => {
+    setSerVal(event.target.value);
+  };
+
+  const handlePress = (event) => {
+    if (event.key === "Enter") {
+      setEnableSer(true);
+      setSerEnt(true);
+      setDrinksData([]);
+    }
+  };
+
+  const handleClick = () => {
+    setEnableSer(true);
+    setSerEnt(true);
+    setDrinksData([]);
+  };
+
+  const handleSerRemove = () => {
+    setSerVal("");
+    setSerEnt(true);
+    setDrinksData([]);
+    setEnableSer(false);
+  };
+
   return (
     <React.Fragment>
       <Compo>
@@ -92,6 +130,14 @@ const MainPage = () => {
             </span>
             <span className="text">FluDtY</span>
           </LogoTxt>
+          <SearchBar
+            serVal={serVal}
+            handleChange={handleChange}
+            handlePress={handlePress}
+            handleClick={handleClick}
+            enableSer={enableSer}
+            handleSerRemove={handleSerRemove}
+          />
           <MenuFeature>
             <MenuComp />
           </MenuFeature>
@@ -156,7 +202,7 @@ const TopContent = styled.div`
   align-items: center;
   justify-content: space-between;
   background: transparent;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 2rem 0;
   padding: 0 1rem;
 `;
 
