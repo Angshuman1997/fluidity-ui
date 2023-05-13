@@ -38,9 +38,10 @@ const MainPage = () => {
                   : "Something Went Wrong",
             })
           );
+          sessionStorage.removeItem("fludtyTok");
           navigate("/login");
         } else {
-          setDrinksData((prev)=>[...prev, ...response.data.data]);
+          setDrinksData((prev) => [...prev, ...response.data.data]);
         }
       })
       .catch((error) => {
@@ -55,6 +56,7 @@ const MainPage = () => {
                   : "Something Went Wrong",
             })
           );
+          sessionStorage.removeItem("fludtyTok");
           navigate("/login");
         } else {
           dispatch(
@@ -68,9 +70,9 @@ const MainPage = () => {
       });
   };
 
-  const handleLoadMore = () =>{
-    setOffset(prev=>prev+1);
-  }
+  const handleLoadMore = () => {
+    setOffset((prev) => prev + 1);
+  };
 
   useEffect(() => {
     getData();
@@ -109,7 +111,9 @@ const MainPage = () => {
                 );
               })}
               <LoadMore>
-                <LoadMoreButton onClick={handleLoadMore}>Load More</LoadMoreButton>
+                <LoadMoreButton onClick={handleLoadMore}>
+                  Load More
+                </LoadMoreButton>
               </LoadMore>
             </React.Fragment>
           ) : (

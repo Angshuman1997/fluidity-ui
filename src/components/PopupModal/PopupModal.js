@@ -25,19 +25,45 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
         },
       })
       .then((response) => {
-        if(response.status === 440 || response.status === 401) {
-          dispatch(notificationFunc({ open: true, severity: "error", message: response.status === 440 ? "Session Expired" : "Something Went Wrong" }));
+        if (response.status === 440 || response.status === 401) {
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message:
+                response.status === 440
+                  ? "Session Expired"
+                  : "Something Went Wrong",
+            })
+          );
+          sessionStorage.removeItem("fludtyTok");
           navigate("/login");
         } else {
           setContent(JSON.parse(response.data.data));
-        }        
+        }
       })
       .catch((error) => {
-        if(error.response.status === 401 || error.response.status === 440) {
-          dispatch(notificationFunc({ open: true, severity: "error", message: error.response.status === 440 ? "Session Expired" : "Something Went Wrong" }));
+        if (error.response.status === 401 || error.response.status === 440) {
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message:
+                error.response.status === 440
+                  ? "Session Expired"
+                  : "Something Went Wrong",
+            })
+          );
+          sessionStorage.removeItem("fludtyTok");
           navigate("/login");
-        } else{
-          dispatch(notificationFunc({ open: true, severity: "error", message: error.message }));
+        } else {
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message: error.message,
+            })
+          );
         }
       });
   };
@@ -58,7 +84,7 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          height: '100%',
+          height: "100%",
           width: "100%",
 
           "& ::-webkit-scrollbar": {
@@ -143,7 +169,7 @@ const Loader = styled.div`
 const MainContent = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%
+  height: 100%;
 `;
 const CloseBtnSection = styled.div`
   display: flex;
@@ -160,7 +186,7 @@ const CloseBtnSection = styled.div`
 `;
 const Content = styled.div`
   overflow-y: scroll;
-  height: 100%
+  height: 100%;
 `;
 const ImageSection = styled.div`
   display: flex;
