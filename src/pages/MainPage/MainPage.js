@@ -10,6 +10,9 @@ import { notificationFunc } from "../../redux/actions/actions";
 import MenuComp from "../../components/MenuComp/MenuComp";
 import SkeletonLoader from "../../components/SkeletonLoader/SkeletonLoader";
 import SearchBar from "../../components/SearchBar/SearchBar";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import SearchIcon from "@mui/icons-material/Search";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -22,6 +25,8 @@ const MainPage = () => {
   const [enableSer, setEnableSer] = React.useState(false);
   const [serEnt, setSerEnt] = React.useState(false);
   const [popupContentId, setPopupContentId] = React.useState("");
+  const [mobSearch, setMobSearch] = React.useState(false);
+
   const handleClose = () => setOpenPopup(false);
   const getData = () => {
     axios
@@ -120,6 +125,15 @@ const MainPage = () => {
     setEnableSer(false);
   };
 
+  const handleOpenSearchBar = () => {
+    setMobSearch(true);
+  };
+
+  const handleCloseSearchBar = () => {
+    setMobSearch(false);
+    enableSer && handleSerRemove();
+  }
+
   return (
     <React.Fragment>
       <Compo>
@@ -130,14 +144,21 @@ const MainPage = () => {
             </span>
             <span className="text">FluDtY</span>
           </LogoTxt>
-          <SearchBar
-            serVal={serVal}
-            handleChange={handleChange}
-            handlePress={handlePress}
-            handleClick={handleClick}
-            enableSer={enableSer}
-            handleSerRemove={handleSerRemove}
-          />
+          <SearchContent>
+            <SearchBar
+              serVal={serVal}
+              handleChange={handleChange}
+              handlePress={handlePress}
+              handleClick={handleClick}
+              enableSer={enableSer}
+              handleSerRemove={handleSerRemove}
+            />
+          </SearchContent>
+          <FavouriteSeaction>
+            <Favbtn>
+              <FavoriteIcon />
+            </Favbtn>
+          </FavouriteSeaction>
           <MenuFeature>
             <MenuComp />
           </MenuFeature>
@@ -171,6 +192,32 @@ const MainPage = () => {
             <SkeletonLoader />
           )}
         </MiddleContent>
+        <BottomContent>
+          {mobSearch ? (
+            <React.Fragment>
+              <SearchBar
+                serVal={serVal}
+                handleChange={handleChange}
+                handlePress={handlePress}
+                handleClick={handleClick}
+                enableSer={enableSer}
+                handleSerRemove={handleSerRemove}
+              />
+              <RemoveSer onClick={handleCloseSearchBar}>
+                <SearchOffIcon />
+              </RemoveSer>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <SortByFavBtn>
+                <FavoriteIcon />
+              </SortByFavBtn>
+              <SearchFeaBtn onClick={handleOpenSearchBar}>
+                <SearchIcon />
+              </SearchFeaBtn>
+            </React.Fragment>
+          )}
+        </BottomContent>
       </Compo>
       {openPopup && (
         <PopupModal
@@ -204,6 +251,9 @@ const TopContent = styled.div`
   background: transparent;
   margin: 0.5rem 0 2rem 0;
   padding: 0 1rem;
+  @media screen and (max-width: 500px) {
+    margin: 0.5rem 0 1rem 0;
+  }
 `;
 
 const LogoTxt = styled.div`
@@ -239,7 +289,7 @@ const Card = styled.div`
 `;
 
 const LoadMore = styled.div`
-  margin: 2rem;
+  padding: 1rem;
   width: 100%;
   display: flex;
   align-items: center;
@@ -251,4 +301,55 @@ const LoadMoreButton = styled.button`
   font-size: 1.2rem;
   border-radius: 0.8rem;
   cursor: pointer;
+`;
+
+const SearchContent = styled.div`
+  width: 100%;
+  margin: 0 0.5rem 0 1rem;
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
+`;
+
+const BottomContent = styled.div`
+  padding: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  display: none;
+  @media screen and (max-width: 500px) {
+    display: flex;
+  }
+`;
+
+const SortByFavBtn = styled.button`
+  color: #ffffff;
+  border: none;
+  background: transparent;
+  margin: 0 0.5rem;
+`;
+
+const SearchFeaBtn = styled.button`
+  color: #ffffff;
+  border: none;
+  background: transparent;
+  margin: 0 0.5rem;
+`;
+
+const FavouriteSeaction = styled.div`
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
+`;
+const Favbtn = styled.button`
+  color: #ffffff;
+  border: none;
+  background: transparent;
+`;
+
+const RemoveSer = styled.button`
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  padding: 0.5rem;
+  margin-left: 0.2rem;
 `;

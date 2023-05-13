@@ -24,7 +24,7 @@ const SearchBar = ({
         <SearchBtn onClick={handleClick}>
           <SearchIcon />
         </SearchBtn>
-        <RemoveSearch
+        <RemoveSearch title="Fetch all data"
           onClick={handleSerRemove}
           disabled={!enableSer}
           style={{ cursor: enableSer ? "pointer" : "not-allowed" }}
@@ -44,7 +44,6 @@ const Content = styled.div`
   align-items: center;
   justify-content: center;
   background: #ffffff;
-  margin: 0 2rem;
   border-radius: 1.5rem;
 `;
 
@@ -55,7 +54,7 @@ const InnerContent = styled.div`
   justify-content: space-between;
   padding: 0.4rem 0;
   input {
-    width: 90%;
+    width: 100%;
     margin-left: 0.8rem;
     font-size: 1rem;
     border: none;
@@ -70,30 +69,19 @@ const InnerContent = styled.div`
 const SearchBtn = styled.button`
   border: none;
   background: transparent;
-  margin-right: 0.2rem;
   display: flex;
   align-items: center;
   cursor: pointer;
+  padding: 0;
+  margin: 0 0.2rem;
 `;
 
 const RemoveSearch = styled.button`
   border: none;
   background: transparent;
-  margin-right: 0.2rem;
+  margin: 0 0.5rem 0 0;
   display: flex;
   align-items: center;
   cursor: pointer;
-  &:hover:after {
-    content: "Fetch All Data";
-    font-family: Arial;
-    position: absolute;
-    top: 3rem;
-    width: 5rem;
-    height: 2rem;
-    background-color: gray;
-    color: white;
-    padding: 0.2rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-  }
+  padding: 0;
 `;
