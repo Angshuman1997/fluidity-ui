@@ -58,6 +58,8 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
+          height: '100%',
+          width: "100%",
 
           "& ::-webkit-scrollbar": {
             width: "5px",
@@ -141,6 +143,7 @@ const Loader = styled.div`
 const MainContent = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%
 `;
 const CloseBtnSection = styled.div`
   display: flex;
@@ -157,7 +160,7 @@ const CloseBtnSection = styled.div`
 `;
 const Content = styled.div`
   overflow-y: scroll;
-  height: 25rem;
+  height: 100%
 `;
 const ImageSection = styled.div`
   display: flex;
