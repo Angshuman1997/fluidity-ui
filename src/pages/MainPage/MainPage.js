@@ -15,39 +15,67 @@ const MainPage = () => {
   const dispatch = useDispatch();
   const [drinksData, setDrinksData] = useState([]);
   const [openPopup, setOpenPopup] = React.useState(false);
+  const [offset, setOffset] = React.useState(0);
   const [popupContentId, setPopupContentId] = React.useState("");
   const handleClose = () => setOpenPopup(false);
   const getData = () => {
-  
     axios
       .get(`${process.env.REACT_APP_API_URI}/drinks`, {
         headers: {
-          offset: "0",
+          offset: `${offset}`,
           Authorization: sessionStorage.getItem("fludtyTok"),
         },
       })
       .then((response) => {
         if (response.status === 440 || response.status === 401) {
-          dispatch(notificationFunc({ open: true, severity: "error", message: response.status === 440 ? "Session Expired" : "Something Went Wrong" }));
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message:
+                response.status === 440
+                  ? "Session Expired"
+                  : "Something Went Wrong",
+            })
+          );
           navigate("/login");
         } else {
-          setDrinksData(response.data.data);
+          setDrinksData((prev)=>[...prev, ...response.data.data]);
         }
       })
       .catch((error) => {
         if (error.response.status === 401 || error.response.status === 440) {
-          dispatch(notificationFunc({ open: true, severity: "error", message: error.response.status === 440 ? "Session Expired" : "Something Went Wrong" }));
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message:
+                error.response.status === 440
+                  ? "Session Expired"
+                  : "Something Went Wrong",
+            })
+          );
           navigate("/login");
         } else {
-          dispatch(notificationFunc({ open: true, severity: "error", message: error.message }));
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message: error.message,
+            })
+          );
         }
       });
   };
 
+  const handleLoadMore = () =>{
+    setOffset(prev=>prev+1);
+  }
+
   useEffect(() => {
     getData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offset]);
 
   return (
     <React.Fragment>
@@ -64,21 +92,29 @@ const MainPage = () => {
           </MenuFeature>
         </TopContent>
         <MiddleContent>
-        {drinksData?.length > 0 ?
-          Object.keys(drinksData).map((i, index) => {
-            const data = JSON.parse(drinksData[i]);
-            return (
-              <Card
-                key={`${i}-${index}`}
-                onClick={() => {
-                  setPopupContentId(data._id.$oid);
-                  setOpenPopup(true);
-                }}
-              >
-                <ModCard image={data.image} name={data.name} />
-              </Card>
-            );
-          }) : <SkeletonLoader />}
+          {drinksData?.length > 0 ? (
+            <React.Fragment>
+              {Object.keys(drinksData).map((i, index) => {
+                const data = JSON.parse(drinksData[i]);
+                return (
+                  <Card
+                    key={`${i}-${index}`}
+                    onClick={() => {
+                      setPopupContentId(data._id.$oid);
+                      setOpenPopup(true);
+                    }}
+                  >
+                    <ModCard image={data.image} name={data.name} />
+                  </Card>
+                );
+              })}
+              <LoadMore>
+                <LoadMoreButton onClick={handleLoadMore}>Load More</LoadMoreButton>
+              </LoadMore>
+            </React.Fragment>
+          ) : (
+            <SkeletonLoader />
+          )}
         </MiddleContent>
       </Compo>
       {openPopup && (
@@ -144,5 +180,20 @@ const MiddleContent = styled.div`
 
 const Card = styled.div`
   padding: 1rem;
+  cursor: pointer;
+`;
+
+const LoadMore = styled.div`
+  margin: 2rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const LoadMoreButton = styled.button`
+  border: 0.2rem solid #ffffff;
+  background: #ffffff;
+  font-size: 1.2rem;
+  border-radius: 0.8rem;
   cursor: pointer;
 `;
