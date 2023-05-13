@@ -16,6 +16,7 @@ const MainPage = () => {
   const [drinksData, setDrinksData] = useState([]);
   const [openPopup, setOpenPopup] = React.useState(false);
   const [offset, setOffset] = React.useState(0);
+  const [total, setTotal] = React.useState(0);
   const [popupContentId, setPopupContentId] = React.useState("");
   const handleClose = () => setOpenPopup(false);
   const getData = () => {
@@ -23,6 +24,7 @@ const MainPage = () => {
       .get(`${process.env.REACT_APP_API_URI}/drinks`, {
         headers: {
           offset: `${offset}`,
+          search: "",
           Authorization: sessionStorage.getItem("fludtyTok"),
         },
       })
@@ -41,6 +43,7 @@ const MainPage = () => {
           sessionStorage.removeItem("fludtyTok");
           navigate("/login");
         } else {
+          setTotal(response.data.total);
           setDrinksData((prev) => [...prev, ...response.data.data]);
         }
       })
@@ -71,7 +74,7 @@ const MainPage = () => {
   };
 
   const handleLoadMore = () => {
-    setOffset((prev) => prev + 1);
+    setOffset((prev) => prev + 10);
   };
 
   useEffect(() => {
@@ -110,11 +113,13 @@ const MainPage = () => {
                   </Card>
                 );
               })}
-              <LoadMore>
-                <LoadMoreButton onClick={handleLoadMore}>
-                  Load More
-                </LoadMoreButton>
-              </LoadMore>
+              {drinksData?.length < total && (
+                <LoadMore>
+                  <LoadMoreButton onClick={handleLoadMore}>
+                    Load More
+                  </LoadMoreButton>
+                </LoadMore>
+              )}
             </React.Fragment>
           ) : (
             <SkeletonLoader />
