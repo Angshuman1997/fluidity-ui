@@ -294,6 +294,8 @@ const MainPage = () => {
           open={openPopup}
           handleClose={handleClose}
           popupContentId={popupContentId}
+          setTotal={setTotal}
+          favSort={favSort}
         />
       )}
     </React.Fragment>

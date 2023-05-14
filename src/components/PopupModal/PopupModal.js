@@ -12,7 +12,7 @@ import { notificationFunc, userCredsFunc } from "../../redux/actions/actions";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-export default function PopupModal({ open, handleClose, popupContentId, drinksData, setDrinksData }) {
+export default function PopupModal({ open, handleClose, popupContentId, drinksData, setDrinksData, setTotal, favSort }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userCreds } = useSelector((state) => state);
@@ -21,6 +21,20 @@ export default function PopupModal({ open, handleClose, popupContentId, drinksDa
   const [content, setContent] = React.useState(null);
   const [fav, setFav] = React.useState(false);
   const [loader, setLoader] = React.useState(false);
+
+  const favStageUpdate = (drinkId) => {
+    const temp = [];
+    Object.keys(drinksData).forEach((i) => {
+      const obj = JSON.parse(drinksData[i]);
+      if (obj._id.$oid !== drinkId) {
+        const temp2 = { ...obj };
+        temp.push(JSON.stringify(temp2));
+      }
+    });
+    setTotal(prev=>prev-1);
+    setDrinksData(temp);
+    handleClose();
+  };
 
   const modifyFav = (drinkId, userid, action) => {
     const temp = [];
@@ -139,6 +153,7 @@ export default function PopupModal({ open, handleClose, popupContentId, drinksDa
         } else {
           setFav((prev) => !prev);
           modifyFav(popupContentId, userCreds.userid, fav ? "remove" : "add");
+          favSort && favStageUpdate(popupContentId);
         }
 
         setLoader(false);
