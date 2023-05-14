@@ -5,7 +5,7 @@ import ModCard from "../../components/ModCard/ModCard";
 import axios from "axios";
 import PopupModal from "../../components/PopupModal/PopupModal";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { notificationFunc, userCredsFunc } from "../../redux/actions/actions";
 import MenuComp from "../../components/MenuComp/MenuComp";
 import SkeletonLoader from "../../components/SkeletonLoader/SkeletonLoader";
@@ -17,6 +17,7 @@ import jwt_decode from "jwt-decode";
 import PopoverComp from "../../components/PopoverComp/PopoverComp";
 
 const MainPage = () => {
+  const { userCreds } = useSelector((state) => state);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [drinksData, setDrinksData] = useState([]);
@@ -191,7 +192,7 @@ const MainPage = () => {
                       setOpenPopup(true);
                     }}
                   >
-                    <ModCard image={data.image} name={data.name} />
+                    <ModCard image={data.image} name={data.name} favVal={data.favourite.includes(userCreds.userid)} fdId={data._id.$oid}/>
                   </Card>
                 );
               })}
