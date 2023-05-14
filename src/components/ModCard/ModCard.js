@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { styled } from "styled-components";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -103,12 +102,14 @@ export default function ModCard({ image, name, favVal, fdId }) {
     >
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography component="div" variant="h5">
-            {name}
-          </Typography>
+          <CardTitle>{name}</CardTitle>
         </CardContent>
         <Box sx={{ display: "flex", alignItems: "center", pl: 2 }}>
-          <FavBtn width={loader ? "" : "2rem"} height={loader ? "" : "2rem"} onClick={handleFavClick}>
+          <FavBtn
+            width={loader ? "" : "2rem"}
+            height={loader ? "" : "2rem"}
+            onClick={handleFavClick}
+          >
             {loader ? (
               <CircularProgress size={32} sx={{ color: "#ffffff" }} />
             ) : fav ? (
@@ -151,7 +152,21 @@ const FavBtn = styled.button`
   padding: 0.3rem;
   border-radius: 50%;
   svg {
-    width: ${(props) => (props.width)};
-    height: ${(props) => (props.height)};
+    width: ${(props) => props.width};
+    height: ${(props) => props.height};
+  }
+`;
+
+const CardTitle = styled.div`
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: Arial;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  @media screen and (max-width: 500px) {
+    font-size: 1.2rem;
+    height: 3rem;
+    word-break: break-all;
   }
 `;
