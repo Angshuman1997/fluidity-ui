@@ -12,21 +12,55 @@ import { useNavigate } from "react-router-dom";
 import { notificationFunc, userCredsFunc } from "../../redux/actions/actions";
 import { CircularProgress } from "@mui/material";
 
-export default function ModCard({ image, name, favVal, fdId, drinksData }) {
+export default function ModCard({
+  image,
+  name,
+  fdId,
+  drinksData,
+  favSort,
+  favVal,
+  setDrinksData,
+  setTotal
+}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userCreds } = useSelector((state) => state);
-  const [fav, setFav] = React.useState(favVal);
   const [loader, setLoader] = React.useState(false);
 
-  React.useEffect(()=>{
-    Object.keys(drinksData).forEach((i)=>{
+  const favStageUpdate = (drinkId) => {
+    const temp = [];
+    Object.keys(drinksData).forEach((i) => {
       const obj = JSON.parse(drinksData[i]);
-      if(obj._id.$oid === fdId) {
-        setFav(favVal);
+      if (obj._id.$oid !== drinkId) {
+        const temp2 = { ...obj };
+        temp.push(JSON.stringify(temp2));
       }
-    })
-  }, [drinksData, favVal, fdId, name]);
+    });
+    setTotal(prev=>prev-1);
+    setDrinksData(temp);
+  };
+
+  const modifyFav = (drinkId, userid, action) => {
+    const temp = [];
+    Object.keys(drinksData).forEach((i) => {
+      const obj = JSON.parse(drinksData[i]);
+      let newFav = [...obj.favourite];
+      if (obj._id.$oid === drinkId) {
+        if (action === "remove") {
+          newFav = newFav.filter(function (item) {
+            return item !== userid;
+          });
+        } else {
+          newFav.push(userid);
+        }
+      }
+      const temp2 = { ...obj };
+      temp2["favourite"] = newFav;
+      temp.push(JSON.stringify(temp2));
+    });
+
+    setDrinksData(temp);
+  };
 
   const handleFavClick = (event) => {
     setLoader(true);
@@ -37,7 +71,7 @@ export default function ModCard({ image, name, favVal, fdId, drinksData }) {
         {},
         {
           headers: {
-            fav_type: fav ? "remove" : "add",
+            fav_type: favVal ? "remove" : "add",
             userid: userCreds.userid,
             Authorization: sessionStorage.getItem("fludtyTok"),
           },
@@ -59,7 +93,8 @@ export default function ModCard({ image, name, favVal, fdId, drinksData }) {
           dispatch(userCredsFunc({}));
           navigate("/login");
         } else {
-          setFav((prev) => !prev);
+          modifyFav(fdId, userCreds.userid, favVal ? "remove" : "add");
+          favSort && favStageUpdate(fdId);
         }
 
         setLoader(false);
@@ -122,7 +157,7 @@ export default function ModCard({ image, name, favVal, fdId, drinksData }) {
           >
             {loader ? (
               <CircularProgress size={32} sx={{ color: "#ffffff" }} />
-            ) : fav ? (
+            ) : favVal ? (
               <FavoriteIcon sx={{ color: "red" }} />
             ) : (
               <FavoriteBorderIcon />

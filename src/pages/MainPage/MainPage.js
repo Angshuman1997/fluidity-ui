@@ -237,6 +237,9 @@ const MainPage = () => {
                       favVal={data.favourite.includes(userCreds.userid)}
                       fdId={data._id.$oid}
                       drinksData={drinksData}
+                      favSort={favSort}
+                      setDrinksData={setDrinksData}
+                      setTotal={setTotal}
                     />
                   </Card>
                 );
