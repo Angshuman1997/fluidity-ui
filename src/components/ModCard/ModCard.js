@@ -90,6 +90,7 @@ export default function ModCard({ image, name, favVal, fdId }) {
         width: "25rem",
         height: "10rem",
         alignItems: "center",
+        borderRadius: "1.2rem",
         justifyContent: "space-between",
         "@media screen and (max-width: 480px)": {
           width: "18rem",

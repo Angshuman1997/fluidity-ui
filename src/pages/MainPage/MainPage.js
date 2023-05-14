@@ -398,6 +398,10 @@ const SortByFavBtn = styled.button`
   border: none;
   background: transparent;
   margin: 0 0.5rem;
+  svg{
+    width: 2rem;
+    height: 2rem;
+  }
 `;
 
 const SearchFeaBtn = styled.button`
@@ -405,6 +409,10 @@ const SearchFeaBtn = styled.button`
   border: none;
   background: transparent;
   margin: 0 0.5rem;
+  svg{
+    width: 2rem;
+    height: 2rem;
+  }
 `;
 
 const FavouriteSeaction = styled.div`

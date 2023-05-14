@@ -84,6 +84,12 @@ const AccButton = styled.button`
   color: #ffffff;
   border: none;
   cursor: pointer;
+  @media screen and (max-width: 500px) {
+    svg{
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
 `;
 
 const CloseBtnSec = styled.div`
