@@ -16,6 +16,7 @@ import SearchOffIcon from "@mui/icons-material/SearchOff";
 import jwt_decode from "jwt-decode";
 import PopoverComp from "../../components/PopoverComp/PopoverComp";
 import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
+import LogOutBtn from "../../components/LogOutBtn/LogOutBtn";
 
 const MainPage = () => {
   const { userCreds } = useSelector((state) => state);
@@ -210,9 +211,7 @@ const MainPage = () => {
           <AccountSeaction>
             <PopoverComp />
           </AccountSeaction>
-          <MenuFeature>
-            <MenuComp />
-          </MenuFeature>
+          <LogOutBtn />
         </TopContent>
         <MiddleContent>
           {!loader && drinksData.length === 0 ? (
