@@ -213,7 +213,7 @@ const MainPage = () => {
         <MiddleContent>
           {loader ? (
             <SkeletonLoader />
-          ) : drinksData?.length > 0 ? (
+          ) : drinksData.length > 0 ? (
             <React.Fragment>
               {Object.keys(drinksData).map((i, index) => {
                 const data = JSON.parse(drinksData[i]);
@@ -234,7 +234,7 @@ const MainPage = () => {
                   </Card>
                 );
               })}
-              {drinksData?.length < total && (
+              {drinksData.length < total && (
                 <LoadMore>
                   <LoadMoreButton onClick={handleLoadMore}>
                     Load More
@@ -345,7 +345,6 @@ const MiddleContent = styled.div`
   justify-content: center;
   overflow-x: hidden;
   overflow-y: scroll;
-  height: 100%;
 `;
 
 const Card = styled.div`
@@ -437,5 +436,7 @@ const NoData = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 70%;
+  @media screen and (min-width: 500px) {
+    height: 25rem;
+  }
 `;
