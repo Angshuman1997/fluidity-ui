@@ -237,11 +237,7 @@ const LoginPage = () => {
 export default LoginPage;
 
 const Compo = styled.div`
-  background: radial-gradient(
-    circle,
-    rgb(46 101 126) 64%,
-    rgb(32 82 61 / 99%) 100%
-  );
+  background: transparent;
   display: flex;
   flex-direction: column;
   width: 100%;

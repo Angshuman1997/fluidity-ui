@@ -49,11 +49,7 @@ const HomePage = () => {
 export default HomePage;
 
 const Compo = styled.div`
-  background: radial-gradient(
-    circle,
-    rgb(46 101 126) 64%,
-    rgb(32 82 61 / 99%) 100%
-  );
+  background: transparent;
   display: flex;
   flex-direction: column;
   overflow: hidden;

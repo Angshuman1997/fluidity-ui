@@ -6,6 +6,7 @@ export const AppStyle = styled.div`
   display: flex;
   overflow: hidden;
   position: fixed;
+  background: radial-gradient( circle, rgb(46 101 126) 64%, rgb(65 64 74 / 99%) 100% );
 
   /* width */
   ::-webkit-scrollbar {
