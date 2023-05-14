@@ -7,16 +7,20 @@ import { CircularProgress } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { notificationFunc, userCredsFunc } from "../../redux/actions/actions";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export default function PopupModal({ open, handleClose, popupContentId }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userCreds } = useSelector((state) => state);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [content, setContent] = React.useState(null);
+  const [fav, setFav] = React.useState(false);
+  const [loader, setLoader] = React.useState(false);
 
   const getOneData = () => {
     axios
@@ -41,8 +45,80 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
           dispatch(userCredsFunc({}));
           navigate("/login");
         } else {
-          setContent(JSON.parse(response.data.data));
+          const allD = JSON.parse(response.data.data);
+          setFav(allD.favourite?.includes(userCreds.userid))
+          setContent(allD);
         }
+        setLoader(false);
+      })
+      .catch((error) => {
+        if (error?.response?.status === 401 || error?.response?.status === 440) {
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message:
+                error.response.status === 440
+                  ? "Session Expired"
+                  : "Something Went Wrong",
+            })
+          );
+          sessionStorage.removeItem("fludtyTok");
+          dispatch(userCredsFunc({}));
+          navigate("/login");
+        } else {
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message: error.message,
+            })
+          );
+        }
+        setLoader(false);
+      });
+  };
+
+  React.useEffect(() => {
+    getOneData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleClickFav = (event) => {
+    setLoader(true);
+    event.stopPropagation();
+    axios
+      .put(
+        `${process.env.REACT_APP_API_URI}/favdrink/${popupContentId}`,
+        {},
+        {
+          headers: {
+            fav_type: fav ? "remove" : "add",
+            userid: userCreds.userid,
+            Authorization: sessionStorage.getItem("fludtyTok"),
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 440 || response.status === 401) {
+          dispatch(
+            notificationFunc({
+              open: true,
+              severity: "error",
+              message:
+                response.status === 440
+                  ? "Session Expired"
+                  : "Something Went Wrong",
+            })
+          );
+          sessionStorage.removeItem("fludtyTok");
+          dispatch(userCredsFunc({}));
+          navigate("/login");
+        } else {
+          setFav((prev) => !prev);
+        }
+
+        setLoader(false);
       })
       .catch((error) => {
         if (error.response.status === 401 || error.response.status === 440) {
@@ -68,16 +144,9 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
             })
           );
         }
+        setLoader(false);
       });
   };
-
-  React.useEffect(() => {
-    getOneData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleClickFav = () =>{
-  }
 
   return (
     <Dialog
@@ -118,8 +187,8 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
       ) : (
         <MainContent>
           <TopSection>
-            <FavBtn onClick={handleClickFav}>
-              <FavoriteBorderIcon />
+            <FavBtn width={loader ? "" : "3rem"} height={loader ? "" : "2rem"} onClick={handleClickFav}>
+              {loader ? <CircularProgress size={32} sx={{ color: "#000000", marginRight: '0.5rem' }}/> : fav ? <FavoriteIcon sx={{ color: "red" }}/> :<FavoriteBorderIcon />}
             </FavBtn>
             <button className="close-btn" onClick={handleClose}>
               <CloseIcon />
@@ -263,7 +332,7 @@ const FavBtn = styled.button`
   border-radius: 50%;
   display: flex;
   svg {
-    width: 3rem;
-    height: 2rem;
+    width: ${(props) => (props.width)};
+    height: ${(props) => (props.height)};
   }
 `;

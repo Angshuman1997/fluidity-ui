@@ -108,7 +108,7 @@ export default function ModCard({ image, name, favVal, fdId }) {
           </Typography>
         </CardContent>
         <Box sx={{ display: "flex", alignItems: "center", pl: 2 }}>
-          <FavBtn loader={loader} onClick={handleFavClick}>
+          <FavBtn width={loader ? "" : "2rem"} height={loader ? "" : "2rem"} onClick={handleFavClick}>
             {loader ? (
               <CircularProgress size={32} sx={{ color: "#ffffff" }} />
             ) : fav ? (
@@ -151,7 +151,7 @@ const FavBtn = styled.button`
   padding: 0.3rem;
   border-radius: 50%;
   svg {
-    width: ${(props) => (props.loader ? "" : "2rem")};
-    height: ${(props) => (props.loader ? "" : "2rem")};
+    width: ${(props) => (props.width)};
+    height: ${(props) => (props.height)};
   }
 `;
