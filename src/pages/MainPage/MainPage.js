@@ -15,7 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import jwt_decode from "jwt-decode";
 import PopoverComp from "../../components/PopoverComp/PopoverComp";
-import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
+import HeartBrokenIcon from "@mui/icons-material/HeartBroken";
 
 const MainPage = () => {
   const { userCreds } = useSelector((state) => state);
@@ -31,9 +31,11 @@ const MainPage = () => {
   const [popupContentId, setPopupContentId] = React.useState("");
   const [mobSearch, setMobSearch] = React.useState(false);
   const [favSort, setFavSort] = React.useState(false);
+  const [loader, setLoader] = React.useState(true);
 
   const handleClose = () => setOpenPopup(false);
   const getData = () => {
+    setLoader(true);
     axios
       .get(`${process.env.REACT_APP_API_URI}/drinks`, {
         headers: {
@@ -63,6 +65,7 @@ const MainPage = () => {
           setTotal(response.data.total);
           setDrinksData([...drinksData, ...response.data.data]);
         }
+        setLoader(false);
       })
       .catch((error) => {
         if (error.response.status === 401 || error.response.status === 440) {
@@ -88,6 +91,7 @@ const MainPage = () => {
             })
           );
         }
+        setLoader(false);
       });
   };
 
@@ -162,13 +166,13 @@ const MainPage = () => {
     enableSer && handleSerRemove();
   };
 
-  const handleFavSort = () =>{
+  const handleFavSort = () => {
     setSerVal("");
     setSerEnt(true);
     setDrinksData([]);
     setEnableSer(false);
-    setFavSort(prev=>!prev);
-  }
+    setFavSort((prev) => !prev);
+  };
 
   return (
     <React.Fragment>
@@ -192,7 +196,11 @@ const MainPage = () => {
           </SearchContent>
           <FavouriteSeaction>
             <Favbtn onClick={handleFavSort}>
-              {favSort ? <HeartBrokenIcon sx={{color: "red"}} /> : <FavoriteIcon />}
+              {favSort ? (
+                <HeartBrokenIcon sx={{ color: "red" }} />
+              ) : (
+                <FavoriteIcon />
+              )}
             </Favbtn>
           </FavouriteSeaction>
           <AccountSeaction>
@@ -203,7 +211,9 @@ const MainPage = () => {
           </MenuFeature>
         </TopContent>
         <MiddleContent>
-          {drinksData?.length > 0 ? (
+          {loader ? (
+            <SkeletonLoader />
+          ) : drinksData?.length > 0 ? (
             <React.Fragment>
               {Object.keys(drinksData).map((i, index) => {
                 const data = JSON.parse(drinksData[i]);
@@ -215,7 +225,12 @@ const MainPage = () => {
                       setOpenPopup(true);
                     }}
                   >
-                    <ModCard image={data.image} name={data.name} favVal={data.favourite.includes(userCreds.userid)} fdId={data._id.$oid}/>
+                    <ModCard
+                      image={data.image}
+                      name={data.name}
+                      favVal={data.favourite.includes(userCreds.userid)}
+                      fdId={data._id.$oid}
+                    />
                   </Card>
                 );
               })}
@@ -228,7 +243,9 @@ const MainPage = () => {
               )}
             </React.Fragment>
           ) : (
-            <SkeletonLoader />
+            <NoData>
+              <h1>No Data Found</h1>
+            </NoData>
           )}
         </MiddleContent>
         <BottomContent>
@@ -249,9 +266,13 @@ const MainPage = () => {
           ) : (
             <React.Fragment>
               <SortByFavBtn onClick={handleFavSort}>
-              {favSort ? <HeartBrokenIcon sx={{color: "red"}}/> : <FavoriteIcon />}
+                {favSort ? (
+                  <HeartBrokenIcon sx={{ color: "red" }} />
+                ) : (
+                  <FavoriteIcon />
+                )}
               </SortByFavBtn>
-              <PopoverComp placement={'top'}/>
+              <PopoverComp placement={"top"} />
               <SearchFeaBtn onClick={handleOpenSearchBar}>
                 <SearchIcon />
               </SearchFeaBtn>
@@ -324,6 +345,7 @@ const MiddleContent = styled.div`
   justify-content: center;
   overflow-x: hidden;
   overflow-y: scroll;
+  height: 100%;
 `;
 
 const Card = styled.div`
@@ -409,4 +431,11 @@ const RemoveSer = styled.button`
   color: #ffffff;
   padding: 0.5rem;
   margin-left: 0.2rem;
+`;
+
+const NoData = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70%;
 `;
