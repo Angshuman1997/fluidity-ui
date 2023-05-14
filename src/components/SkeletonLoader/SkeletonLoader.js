@@ -3,7 +3,7 @@ import Skeleton from "@mui/material/Skeleton";
 import { styled } from "styled-components";
 
 export default function SkeletonLoader() {
-    const bodies = [...Array(50).keys()].map(i => i + 1);
+    const bodies = [...Array(6).keys()].map(i => i + 1);
   return (
     <React.Fragment>
       {Object.keys(bodies).map((i, index) => (
