@@ -15,6 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import jwt_decode from "jwt-decode";
 import PopoverComp from "../../components/PopoverComp/PopoverComp";
+import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 
 const MainPage = () => {
   const { userCreds } = useSelector((state) => state);
@@ -29,6 +30,7 @@ const MainPage = () => {
   const [serEnt, setSerEnt] = React.useState(false);
   const [popupContentId, setPopupContentId] = React.useState("");
   const [mobSearch, setMobSearch] = React.useState(false);
+  const [favSort, setFavSort] = React.useState(false);
 
   const handleClose = () => setOpenPopup(false);
   const getData = () => {
@@ -36,7 +38,9 @@ const MainPage = () => {
       .get(`${process.env.REACT_APP_API_URI}/drinks`, {
         headers: {
           offset: `${offset}`,
-          search: serVal.trim(),
+          favSort: `${favSort}`,
+          userid: userCreds.userid,
+          search: favSort ? "" : serVal.trim(),
           Authorization: sessionStorage.getItem("fludtyTok"),
         },
       })
@@ -113,6 +117,14 @@ const MainPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serEnt]);
 
+  useEffect(() => {
+    if (favSort) {
+      getData();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [favSort]);
+
   const handleChange = (event) => {
     setSerVal(event.target.value);
   };
@@ -122,6 +134,7 @@ const MainPage = () => {
       setEnableSer(true);
       setSerEnt(true);
       setDrinksData([]);
+      setFavSort(false);
     }
   };
 
@@ -129,6 +142,7 @@ const MainPage = () => {
     setEnableSer(true);
     setSerEnt(true);
     setDrinksData([]);
+    setFavSort(false);
   };
 
   const handleSerRemove = () => {
@@ -136,6 +150,7 @@ const MainPage = () => {
     setSerEnt(true);
     setDrinksData([]);
     setEnableSer(false);
+    setFavSort(false);
   };
 
   const handleOpenSearchBar = () => {
@@ -146,6 +161,14 @@ const MainPage = () => {
     setMobSearch(false);
     enableSer && handleSerRemove();
   };
+
+  const handleFavSort = () =>{
+    setSerVal("");
+    setSerEnt(true);
+    setDrinksData([]);
+    setEnableSer(false);
+    setFavSort(prev=>!prev);
+  }
 
   return (
     <React.Fragment>
@@ -168,8 +191,8 @@ const MainPage = () => {
             />
           </SearchContent>
           <FavouriteSeaction>
-            <Favbtn>
-              <FavoriteIcon />
+            <Favbtn onClick={handleFavSort}>
+              {favSort ? <HeartBrokenIcon sx={{color: "red"}} /> : <FavoriteIcon />}
             </Favbtn>
           </FavouriteSeaction>
           <AccountSeaction>
@@ -225,8 +248,8 @@ const MainPage = () => {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              <SortByFavBtn>
-                <FavoriteIcon />
+              <SortByFavBtn onClick={handleFavSort}>
+              {favSort ? <HeartBrokenIcon sx={{color: "red"}}/> : <FavoriteIcon />}
               </SortByFavBtn>
               <PopoverComp placement={'top'}/>
               <SearchFeaBtn onClick={handleOpenSearchBar}>
@@ -259,6 +282,9 @@ const Compo = styled.div`
   flex-direction: column;
   width: 100%;
   color: #ffffff !important;
+  @media screen and (max-width: 500px) {
+    justify-content: space-between;
+  }
 `;
 
 const TopContent = styled.div`
@@ -374,6 +400,7 @@ const Favbtn = styled.button`
   color: #ffffff;
   border: none;
   background: transparent;
+  cursor: pointer;
 `;
 
 const RemoveSer = styled.button`
