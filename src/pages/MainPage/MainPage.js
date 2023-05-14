@@ -7,7 +7,6 @@ import PopupModal from "../../components/PopupModal/PopupModal";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { notificationFunc, userCredsFunc } from "../../redux/actions/actions";
-import MenuComp from "../../components/MenuComp/MenuComp";
 import SkeletonLoader from "../../components/SkeletonLoader/SkeletonLoader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -306,8 +305,8 @@ export default MainPage;
 const Compo = styled.div`
   background: radial-gradient(
     circle,
-    rgba(12, 4, 24, 1) 64%,
-    rgba(33, 13, 55, 0.9864320728291317) 100%
+    rgb(46 101 126) 64%,
+    rgb(32 82 61 / 99%) 100%
   );
   display: flex;
   flex-direction: column;
@@ -346,8 +345,6 @@ const LogoTxt = styled.div`
     align-items: center;
   }
 `;
-
-const MenuFeature = styled.div``;
 
 const MiddleContent = styled.div`
   display: flex;

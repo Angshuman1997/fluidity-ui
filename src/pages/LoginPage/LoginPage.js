@@ -63,8 +63,7 @@ const LoginPage = () => {
     });
   };
 
-  const handleFP = () => {
-  };
+  const handleFP = () => {};
 
   const loginAction = () => {
     const formData = new FormData();
@@ -75,19 +74,31 @@ const LoginPage = () => {
       .post(`${process.env.REACT_APP_API_URI}/login`, formData)
       .then((response) => {
         sessionStorage.setItem("fludtyTok", response.data.token);
-        dispatch(notificationFunc({ open: true, severity: "success", message: "Login Successful" }));
+        dispatch(
+          notificationFunc({
+            open: true,
+            severity: "success",
+            message: "Login Successful",
+          })
+        );
         navigate("/main");
       })
       .catch((error) => {
-        dispatch(notificationFunc({ open: true, severity: "error", message: error.message }));
+        dispatch(
+          notificationFunc({
+            open: true,
+            severity: "error",
+            message: error.message,
+          })
+        );
       });
   };
 
-  useEffect(()=>{
-    if(sessionStorage.getItem("fludtyTok") !== null) {
+  useEffect(() => {
+    if (sessionStorage.getItem("fludtyTok") !== null) {
       navigate("/main");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -228,8 +239,8 @@ export default LoginPage;
 const Compo = styled.div`
   background: radial-gradient(
     circle,
-    rgba(12, 4, 24, 1) 64%,
-    rgba(33, 13, 55, 0.9864320728291317) 100%
+    rgb(46 101 126) 64%,
+    rgb(32 82 61 / 99%) 100%
   );
   display: flex;
   flex-direction: column;

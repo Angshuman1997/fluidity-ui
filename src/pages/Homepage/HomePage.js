@@ -51,8 +51,8 @@ export default HomePage;
 const Compo = styled.div`
   background: radial-gradient(
     circle,
-    rgba(12, 4, 24, 1) 64%,
-    rgba(33, 13, 55, 0.9864320728291317) 100%
+    rgb(46 101 126) 64%,
+    rgb(32 82 61 / 99%) 100%
   );
   display: flex;
   flex-direction: column;
