@@ -1,1 +1,2 @@
 export const NOTIFICATION = "NOTIFICATION";
+export const USERCREDS = "USERCREDS";

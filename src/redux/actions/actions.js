@@ -1,4 +1,4 @@
-import { NOTIFICATION } from "../actionTypes/actionTypes";
+import { NOTIFICATION, USERCREDS } from "../actionTypes/actionTypes";
 
 const notificationFunc = (data) => {
   return {
@@ -7,4 +7,11 @@ const notificationFunc = (data) => {
   };
 };
 
-export { notificationFunc };
+const userCredsFunc = (data) => {
+  return {
+    type: USERCREDS,
+    payload: data,
+  };
+};
+
+export { notificationFunc, userCredsFunc };

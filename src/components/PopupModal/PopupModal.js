@@ -8,7 +8,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { notificationFunc } from "../../redux/actions/actions";
+import { notificationFunc, userCredsFunc } from "../../redux/actions/actions";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 export default function PopupModal({ open, handleClose, popupContentId }) {
@@ -38,6 +38,7 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
             })
           );
           sessionStorage.removeItem("fludtyTok");
+          dispatch(userCredsFunc({}));
           navigate("/login");
         } else {
           setContent(JSON.parse(response.data.data));
@@ -56,6 +57,7 @@ export default function PopupModal({ open, handleClose, popupContentId }) {
             })
           );
           sessionStorage.removeItem("fludtyTok");
+          dispatch(userCredsFunc({}));
           navigate("/login");
         } else {
           dispatch(

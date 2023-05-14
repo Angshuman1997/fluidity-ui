@@ -6,13 +6,15 @@ import axios from "axios";
 import PopupModal from "../../components/PopupModal/PopupModal";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { notificationFunc } from "../../redux/actions/actions";
+import { notificationFunc, userCredsFunc } from "../../redux/actions/actions";
 import MenuComp from "../../components/MenuComp/MenuComp";
 import SkeletonLoader from "../../components/SkeletonLoader/SkeletonLoader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
+import jwt_decode from "jwt-decode";
+import PopoverComp from "../../components/PopoverComp/PopoverComp";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -50,6 +52,7 @@ const MainPage = () => {
             })
           );
           sessionStorage.removeItem("fludtyTok");
+          dispatch(userCredsFunc({}));
           navigate("/login");
         } else {
           setTotal(response.data.total);
@@ -69,6 +72,7 @@ const MainPage = () => {
             })
           );
           sessionStorage.removeItem("fludtyTok");
+          dispatch(userCredsFunc({}));
           navigate("/login");
         } else {
           dispatch(
@@ -86,7 +90,15 @@ const MainPage = () => {
     setOffset((prev) => prev + 10);
   };
 
+  const getCreds = () => {
+    const crd = jwt_decode(sessionStorage.getItem("fludtyTok"));
+    dispatch(
+      userCredsFunc({ userid: crd.user, name: crd.name, email: crd.email })
+    );
+  };
+
   useEffect(() => {
+    getCreds();
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
@@ -159,6 +171,9 @@ const MainPage = () => {
               <FavoriteIcon />
             </Favbtn>
           </FavouriteSeaction>
+          <AccountSeaction>
+            <PopoverComp />
+          </AccountSeaction>
           <MenuFeature>
             <MenuComp />
           </MenuFeature>
@@ -212,6 +227,7 @@ const MainPage = () => {
               <SortByFavBtn>
                 <FavoriteIcon />
               </SortByFavBtn>
+              <PopoverComp placement={'top'}/>
               <SearchFeaBtn onClick={handleOpenSearchBar}>
                 <SearchIcon />
               </SearchFeaBtn>
@@ -346,6 +362,13 @@ const FavouriteSeaction = styled.div`
     display: none;
   }
 `;
+
+const AccountSeaction = styled.div`
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
+`;
+
 const Favbtn = styled.button`
   color: #ffffff;
   border: none;
