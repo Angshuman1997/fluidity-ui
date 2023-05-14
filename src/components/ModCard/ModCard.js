@@ -12,12 +12,21 @@ import { useNavigate } from "react-router-dom";
 import { notificationFunc, userCredsFunc } from "../../redux/actions/actions";
 import { CircularProgress } from "@mui/material";
 
-export default function ModCard({ image, name, favVal, fdId }) {
+export default function ModCard({ image, name, favVal, fdId, drinksData }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userCreds } = useSelector((state) => state);
   const [fav, setFav] = React.useState(favVal);
   const [loader, setLoader] = React.useState(false);
+
+  React.useEffect(()=>{
+    Object.keys(drinksData).forEach((i)=>{
+      const obj = JSON.parse(drinksData[i]);
+      if(obj._id.$oid === fdId) {
+        setFav(favVal);
+      }
+    })
+  }, [drinksData, favVal, fdId, name]);
 
   const handleFavClick = (event) => {
     setLoader(true);

@@ -215,40 +215,42 @@ const MainPage = () => {
           </MenuFeature>
         </TopContent>
         <MiddleContent>
-        {!loader && drinksData.length === 0 ?
-          <NoData>
+          {!loader && drinksData.length === 0 ? (
+            <NoData>
               <h1>No Data Found</h1>
-            </NoData> : 
+            </NoData>
+          ) : (
             <React.Fragment>
-            {Object.keys(drinksData).map((i, index) => {
-              const data = JSON.parse(drinksData[i]);
-              return (
-                <Card
-                  key={`${i}-${index}`}
-                  onClick={() => {
-                    setPopupContentId(data._id.$oid);
-                    setOpenPopup(true);
-                  }}
-                >
-                  <ModCard
-                    image={data.image}
-                    name={data.name}
-                    favVal={data.favourite.includes(userCreds.userid)}
-                    fdId={data._id.$oid}
-                  />
-                </Card>
-              );
-            })}
-            {(!loader && drinksData.length < total) && (
-              <LoadMore>
-                <LoadMoreButton onClick={handleLoadMore}>
-                  Load More
-                </LoadMoreButton>
-              </LoadMore>
-            )}
-          </React.Fragment>
-        }
-        {loader && <SkeletonLoader />}
+              {Object.keys(drinksData).map((i, index) => {
+                const data = JSON.parse(drinksData[i]);
+                return (
+                  <Card
+                    key={`${i}-${index}`}
+                    onClick={() => {
+                      setPopupContentId(data._id.$oid);
+                      setOpenPopup(true);
+                    }}
+                  >
+                    <ModCard
+                      image={data.image}
+                      name={data.name}
+                      favVal={data.favourite.includes(userCreds.userid)}
+                      fdId={data._id.$oid}
+                      drinksData={drinksData}
+                    />
+                  </Card>
+                );
+              })}
+              {!loader && drinksData.length < total && (
+                <LoadMore>
+                  <LoadMoreButton onClick={handleLoadMore}>
+                    Load More
+                  </LoadMoreButton>
+                </LoadMore>
+              )}
+            </React.Fragment>
+          )}
+          {loader && <SkeletonLoader />}
         </MiddleContent>
         <BottomContent>
           {mobSearch ? (
@@ -284,6 +286,8 @@ const MainPage = () => {
       </Compo>
       {openPopup && (
         <PopupModal
+          drinksData={drinksData}
+          setDrinksData={setDrinksData}
           open={openPopup}
           handleClose={handleClose}
           popupContentId={popupContentId}
@@ -398,7 +402,7 @@ const SortByFavBtn = styled.button`
   border: none;
   background: transparent;
   margin: 0 0.5rem;
-  svg{
+  svg {
     width: 2rem;
     height: 2rem;
   }
@@ -409,7 +413,7 @@ const SearchFeaBtn = styled.button`
   border: none;
   background: transparent;
   margin: 0 0.5rem;
-  svg{
+  svg {
     width: 2rem;
     height: 2rem;
   }
