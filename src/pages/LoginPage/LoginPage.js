@@ -6,6 +6,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { useNavigate } from "react-router-dom";
 import { notificationFunc } from "../../redux/actions/actions";
 import { useDispatch } from "react-redux";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ const LoginPage = () => {
   };
 
   const handleRegister = () => {
-    setLoginType("register");
+    setLoginType(loginType === "register" ? "login" : "register");
     setLoginInfo({
       userid: "",
       password: "",
@@ -115,117 +116,135 @@ const LoginPage = () => {
         <Form>
           <FormContent>
             <FormTitle>Sign In</FormTitle>
-            {loginType === "register" && (
+            <InneSecInput height={loginType === "register" ? "50vh" : "30vh"}>
+              {loginType === "register" && (
+                <FieldSection>
+                  <Label>Name</Label>
+                  <InputSec>
+                    <input
+                      type="text"
+                      className="form-control mt-1"
+                      placeholder="Enter Name"
+                      value={loginInfo.name}
+                      onChange={handleChange("name")}
+                    />
+                  </InputSec>
+                </FieldSection>
+              )}
+              {loginType === "register" && (
+                <FieldSection>
+                  <Label>Email address</Label>
+                  <InputSec>
+                    <input
+                      type="email"
+                      className="form-control mt-1"
+                      placeholder="Enter email"
+                      value={loginInfo.email}
+                      onChange={handleChange("email")}
+                    />
+                  </InputSec>
+                </FieldSection>
+              )}
               <FieldSection>
-                <Label>Name</Label>
-                <input
-                  type="text"
-                  className="form-control mt-1"
-                  placeholder="Enter Name"
-                  value={loginInfo.name}
-                  onChange={handleChange("name")}
-                />
+                <Label>User Id</Label>
+                <InputSec>
+                  <input
+                    type="text"
+                    className="form-control mt-1"
+                    placeholder="Enter user id"
+                    value={loginInfo.userid}
+                    onChange={handleChange("userid")}
+                  />
+                </InputSec>
               </FieldSection>
-            )}
-            {loginType === "register" && (
-              <FieldSection>
-                <Label>Email address</Label>
-                <input
-                  type="email"
-                  className="form-control mt-1"
-                  placeholder="Enter email"
-                  value={loginInfo.email}
-                  onChange={handleChange("email")}
-                />
-              </FieldSection>
-            )}
-            <FieldSection>
-              <Label>User Id</Label>
-              <input
-                type="text"
-                className="form-control mt-1"
-                placeholder="Enter useid"
-                value={loginInfo.userid}
-                onChange={handleChange("userid")}
-              />
-            </FieldSection>
-            {loginType !== "register" && (
-              <FieldSection>
-                <Label>Password</Label>
-                <input
-                  type={loginInfo.showPassword ? "text" : "password"}
-                  className="form-control mt-1"
-                  placeholder="Enter password"
-                  value={loginInfo.password}
-                  onChange={handleChange("password")}
-                />
-                <button
+              {loginType !== "register" && (
+                <FieldSection>
+                  <Label>Password</Label>
+                  <InputSec>
+                    <input
+                      type={loginInfo.showPassword ? "text" : "password"}
+                      className="form-control mt-1"
+                      placeholder="Enter password"
+                      value={loginInfo.password}
+                      onChange={handleChange("password")}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleClickShowPassword}
+                    >
+                      <RemoveRedEyeIcon />
+                    </button>
+                  </InputSec>
+                </FieldSection>
+              )}
+              {loginType === "register" && (
+                <FieldSection>
+                  <Label>Add Password</Label>
+                  <InputSec>
+                    <input
+                      type={loginInfo.showRegpassword ? "text" : "password"}
+                      className="form-control mt-1"
+                      placeholder="Enter same password"
+                      value={loginInfo.regpassword}
+                      onChange={handleChange("regpassword")}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleClickShowRegPassword}
+                    >
+                      <RemoveRedEyeIcon />
+                    </button>
+                  </InputSec>
+                </FieldSection>
+              )}
+              {loginType === "register" && (
+                <FieldSection>
+                  <Label>Confirm Password</Label>
+                  <InputSec>
+                    <input
+                      type={loginInfo.showNewpassword ? "text" : "password"}
+                      className="form-control mt-1"
+                      placeholder="Enter same password"
+                      value={loginInfo.newpassword}
+                      onChange={handleChange("newpassword")}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleClickShowNewPassword}
+                    >
+                      <RemoveRedEyeIcon />
+                    </button>
+                  </InputSec>
+                </FieldSection>
+              )}
+              </InneSecInput>
+              <FieldBtnSection>
+                <SubmitBtn
                   type="button"
-                  onClick={handleClickShowPassword}
-                  onTouchEnd={handleClickShowPassword}
+                  className="btn btn-primary"
+                  onClick={loginAction}
                 >
-                  <RemoveRedEyeIcon />
-                </button>
-              </FieldSection>
-            )}
-            {loginType === "register" && (
-              <FieldSection>
-                <Label>Add Password</Label>
-                <input
-                  type={loginInfo.showRegpassword ? "text" : "password"}
-                  className="form-control mt-1"
-                  placeholder="Enter same password"
-                  value={loginInfo.regpassword}
-                  onChange={handleChange("regpassword")}
-                />
-                <button
-                  type="button"
-                  onClick={handleClickShowRegPassword}
-                  onTouchEnd={handleClickShowRegPassword}
-                >
-                  <RemoveRedEyeIcon />
-                </button>
-              </FieldSection>
-            )}
-            {loginType === "register" && (
-              <FieldSection>
-                <Label>Confirm Password</Label>
-                <input
-                  type={loginInfo.showNewpassword ? "text" : "password"}
-                  className="form-control mt-1"
-                  placeholder="Enter smae password"
-                  value={loginInfo.newpassword}
-                  onChange={handleChange("newpassword")}
-                />
-                <button
-                  type="button"
-                  onClick={handleClickShowNewPassword}
-                  onTouchEnd={handleClickShowNewPassword}
-                >
-                  <RemoveRedEyeIcon />
-                </button>
-              </FieldSection>
-            )}
-            <FieldBtnSection>
-              <SubmitBtn
-                type="button"
-                className="btn btn-primary"
-                onClick={loginAction}
-              >
-                Submit
-              </SubmitBtn>
-            </FieldBtnSection>
+                  Submit
+                </SubmitBtn>
+              </FieldBtnSection>
           </FormContent>
           <LoginOption>
-            <ForgetBtn type="button" onClick={handleFP} onTouchEnd={handleFP}>
+            <ForgetBtn
+              type="button"
+              onClick={handleFP}
+              disabled
+            >
               Forgot Password ?
             </ForgetBtn>
             <RegisterBtn
               type="button"
               onClick={handleRegister}
-              onTouchEnd={handleRegister}
             >
-              Register
+              {loginType === "register" ? (
+                <KeyboardDoubleArrowLeftIcon />
+              ) : (
+                "Register"
+              )}
             </RegisterBtn>
           </LoginOption>
         </Form>
@@ -241,8 +260,46 @@ const Compo = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0 1rem;
   color: #ffffff !important;
+`;
+
+const InneSecInput = styled.div`
+  width: 100%;
+  height: ${(prop)=>prop.height};
+  overflow-x: hidden;
+  overflow-y: scroll;
+  transition: 0.3s;
+  @media screen and (max-width: 800px) {
+    height: 40vh;
+  }
+
+  @media screen and (min-width: 1440px) {
+    height: 100%;
+  }
+`;
+
+const InputSec = styled.div`
+  display: flex;
+  align-items: center;
+  width: 90%;
+  border: 0.1rem solid #000000;
+  padding: 0.2rem 0.3rem;
+  border-radius: 0.5rem;
+  height: 2rem;
+  input {
+    border: none;
+    width: 100%;
+    outline: none;
+    font-family: Arial;
+    font-size: 1rem;
+  }
+
+  button {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+  }
 `;
 
 const TopContent = styled.div`
@@ -275,42 +332,44 @@ const MiddleContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5rem;
+  padding: 2rem;
 `;
 
 const Form = styled.form`
   width: 420px;
   box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
-  padding-top: 30px;
-  padding-bottom: 20px;
   border-radius: 8px;
   background-color: white;
+  padding: 0 0 1rem 0;
 `;
 
 const FormContent = styled.div`
   padding-left: 12%;
   padding-right: 12%;
+  @media screen and (max-width: 400px) {
+    padding: 0 1rem;
+  }
 `;
 
 const FormTitle = styled.h3`
   text-align: center;
-  margin-bottom: 1em;
+  margin: 1.5rem 0;
   font-size: 24px;
   color: rgb(34, 34, 34);
   font-weight: 800;
 `;
 
 const Label = styled.label`
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 600;
-  color: rgb(34, 34, 34);
+  color: #000000;
+  margin: 0 0 0.2rem 0;
 `;
 
 const FieldSection = styled.div`
-  margin: 1rem 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  margin: 0 0 0.8rem 0;
 `;
 
 const SubmitBtn = styled.button`
@@ -324,7 +383,7 @@ const SubmitBtn = styled.button`
 `;
 
 const FieldBtnSection = styled.div`
-  margin-top: 2rem;
+  margin-top: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -334,9 +393,32 @@ const LoginOption = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 2rem 2rem 0 2rem;
+  margin: 1rem 1rem 0 1rem;
 `;
 
-const ForgetBtn = styled.button``;
+const ForgetBtn = styled.button`
+  opacity: 0;
+  cursor: initial;
+`;
 
-const RegisterBtn = styled.button``;
+const RegisterBtn = styled.button`
+  display: flex;
+  border: 0.1rem solid #dddada;
+  outline: none;
+  background: #6597cb;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  border-radius: 0.5rem;
+  padding: 0.2rem 0;
+  color: #e4e9ed;
+  cursor: pointer;
+  width: 6rem;
+  align-items: center;
+  justify-content: center;
+  @media screen and (max-width: 480px) {
+    font-size: 1rem;
+  }
+`;
