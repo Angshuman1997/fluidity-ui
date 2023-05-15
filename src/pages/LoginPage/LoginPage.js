@@ -20,8 +20,6 @@ const LoginPage = () => {
     email: "",
     name: "",
     regpassword: "",
-    newpassword: "",
-    showNewpassword: false,
     showPassword: false,
     showRegpassword: false,
   });
@@ -44,12 +42,6 @@ const LoginPage = () => {
     });
   };
 
-  const handleClickShowNewPassword = () => {
-    setLoginInfo({
-      ...loginInfo,
-      showNewpassword: !loginInfo.showNewpassword,
-    });
-  };
 
   const handleRegister = () => {
     setLoginType(loginType === "register" ? "login" : "register");
@@ -59,8 +51,6 @@ const LoginPage = () => {
       email: "",
       name: "",
       regpassword: "",
-      newpassword: "",
-      showNewpassword: false,
       showPassword: false,
       showRegpassword: false,
     });
@@ -72,10 +62,10 @@ const LoginPage = () => {
     setDisableElement(true);
     const formData = new FormData();
     if (loginType === "register") {
-      formData.append("userid", loginInfo.userid);
-      formData.append("password", loginInfo.newpassword);
-      formData.append("name", loginInfo.name);
-      formData.append("email", loginInfo.email);
+      formData.append("userid", loginInfo.userid.trim());
+      formData.append("password", loginInfo.regpassword.trim());
+      formData.append("name", loginInfo.name.trim());
+      formData.append("email", loginInfo.email.trim());
     } else {
       formData.append("userid", loginInfo.userid);
       formData.append("password", loginInfo.password);
@@ -84,15 +74,16 @@ const LoginPage = () => {
     axios
       .post(`${process.env.REACT_APP_API_URI}/login`, formData)
       .then((response) => {
-        sessionStorage.setItem("fludtyTok", response.data.token);
+        loginType !== "register" && sessionStorage.setItem("fludtyTok", response.data.token);
         dispatch(
           notificationFunc({
             open: true,
             severity: "success",
-            message: "Login Successful",
+            message: loginType === "register" ? "Registration Successful" : "Login Successful",
           })
         );
-        navigate("/main");
+        loginType === "register" ? navigate("/login") : navigate("/main");
+        loginType === "register" && setLoginType("login");
         setDisableElement(false);
       })
       .catch((error) => {
@@ -100,7 +91,7 @@ const LoginPage = () => {
           notificationFunc({
             open: true,
             severity: "error",
-            message: error.message,
+            message: error.response.data.Message,
           })
         );
         setDisableElement(false);
@@ -119,9 +110,7 @@ const LoginPage = () => {
       if (
         loginInfo.userid !== "" &&
         loginInfo.email !== "" &&
-        loginInfo.name !== "" &&
-        loginInfo.regpassword.length >= 8 &&
-        loginInfo.regpassword === loginType.newpassword
+        loginInfo.name !== "" && loginInfo.regpassword.length >= 8
       ) {
         loginAction();
       } else {
@@ -168,7 +157,7 @@ const LoginPage = () => {
         <Form>
           <FormContent>
             <FormTitle>Sign In</FormTitle>
-            <InneSecInput height={loginType === "register" ? "50vh" : "30vh"}>
+            <InneSecInput height={loginType === "register" ? "54vh" : "30vh"}>
               {loginType === "register" && (
                 <FieldSection>
                   <Label>Name</Label>
@@ -181,6 +170,7 @@ const LoginPage = () => {
                       onChange={handleChange("name")}
                       onKeyDown={handlePress}
                       disabled={disableElement}
+                      style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
                     />
                   </InputSec>
                 </FieldSection>
@@ -197,6 +187,7 @@ const LoginPage = () => {
                       onChange={handleChange("email")}
                       onKeyDown={handlePress}
                       disabled={disableElement}
+                      style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
                     />
                   </InputSec>
                 </FieldSection>
@@ -212,6 +203,7 @@ const LoginPage = () => {
                     onChange={handleChange("userid")}
                     onKeyDown={handlePress}
                     disabled={disableElement}
+                    style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
                   />
                 </InputSec>
               </FieldSection>
@@ -227,6 +219,7 @@ const LoginPage = () => {
                       onChange={handleChange("password")}
                       onKeyDown={handlePress}
                       disabled={disableElement}
+                      style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
                     />
                     <button type="button" onClick={handleClickShowPassword}>
                       <RemoveRedEyeIcon />
@@ -246,6 +239,7 @@ const LoginPage = () => {
                       onChange={handleChange("regpassword")}
                       onKeyDown={handlePress}
                       disabled={disableElement}
+                      style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
                     />
                     <button type="button" onClick={handleClickShowRegPassword}>
                       <RemoveRedEyeIcon />
@@ -256,25 +250,6 @@ const LoginPage = () => {
                   </PassRegInfo>
                 </FieldSection>
               )}
-              {loginType === "register" && (
-                <FieldSection>
-                  <Label>Confirm Password</Label>
-                  <InputSec>
-                    <input
-                      type={loginInfo.showNewpassword ? "text" : "password"}
-                      className="form-control mt-1"
-                      placeholder="Enter same password"
-                      value={loginInfo.newpassword}
-                      onChange={handleChange("newpassword")}
-                      onKeyDown={handlePress}
-                      disabled={disableElement}
-                    />
-                    <button type="button" onClick={handleClickShowNewPassword}>
-                      <RemoveRedEyeIcon />
-                    </button>
-                  </InputSec>
-                </FieldSection>
-              )}
             </InneSecInput>
             <FieldBtnSection>
               <SubmitBtn
@@ -282,6 +257,7 @@ const LoginPage = () => {
                 className="btn btn-primary"
                 onClick={handleAction}
                 disabled={disableElement}
+                style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
               >
                 {disableElement ? (
                   <CircularProgress size={20} sx={{ color: "#e4e9ed" }} />
@@ -299,6 +275,7 @@ const LoginPage = () => {
               type="button"
               onClick={handleRegister}
               disabled={disableElement}
+              style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
             >
               {loginType === "register" ? (
                 <KeyboardDoubleArrowLeftIcon />
@@ -433,7 +410,7 @@ const FormContent = styled.div`
 
 const FormTitle = styled.h3`
   text-align: center;
-  margin: 1.5rem 0;
+  margin: 1rem 0;
   font-size: 24px;
   color: rgb(34, 34, 34);
   font-weight: 800;
