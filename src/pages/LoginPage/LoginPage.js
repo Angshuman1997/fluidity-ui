@@ -7,11 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { notificationFunc } from "../../redux/actions/actions";
 import { useDispatch } from "react-redux";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import { CircularProgress } from "@mui/material";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loginType, setLoginType] = useState("login");
+  const [disableElement, setDisableElement] = useState(false);
   const [loginInfo, setLoginInfo] = useState({
     userid: "",
     password: "",
@@ -67,10 +69,18 @@ const LoginPage = () => {
   const handleFP = () => {};
 
   const loginAction = () => {
+    setDisableElement(true);
     const formData = new FormData();
-    formData.append("userid", loginInfo.userid);
-    formData.append("password", loginInfo.password);
-    formData.append("login_type", "login");
+    if (loginType === "register") {
+      formData.append("userid", loginInfo.userid);
+      formData.append("password", loginInfo.newpassword);
+      formData.append("name", loginInfo.name);
+      formData.append("email", loginInfo.email);
+    } else {
+      formData.append("userid", loginInfo.userid);
+      formData.append("password", loginInfo.password);
+    }
+    formData.append("login_type", loginType);
     axios
       .post(`${process.env.REACT_APP_API_URI}/login`, formData)
       .then((response) => {
@@ -83,6 +93,7 @@ const LoginPage = () => {
           })
         );
         navigate("/main");
+        setDisableElement(false);
       })
       .catch((error) => {
         dispatch(
@@ -92,6 +103,7 @@ const LoginPage = () => {
             message: error.message,
           })
         );
+        setDisableElement(false);
       });
   };
 
@@ -101,6 +113,46 @@ const LoginPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleAction = () => {
+    if (loginType === "register") {
+      if (
+        loginInfo.userid !== "" &&
+        loginInfo.email !== "" &&
+        loginInfo.name !== "" &&
+        loginInfo.regpassword.length >= 8 &&
+        loginInfo.regpassword === loginType.newpassword
+      ) {
+        loginAction();
+      } else {
+        dispatch(
+          notificationFunc({
+            open: true,
+            severity: "warning",
+            message: "Please check the input fields",
+          })
+        );
+      }
+    } else {
+      if (loginInfo.userid !== "" && loginInfo.password !== "") {
+        loginAction();
+      } else {
+        dispatch(
+          notificationFunc({
+            open: true,
+            severity: "warning",
+            message: "Please check user id and password",
+          })
+        );
+      }
+    }
+  };
+
+  const handlePress = (event) => {
+    if (event.key === "Enter") {
+      handleAction();
+    }
+  };
 
   return (
     <Compo>
@@ -127,6 +179,8 @@ const LoginPage = () => {
                       placeholder="Enter Name"
                       value={loginInfo.name}
                       onChange={handleChange("name")}
+                      onKeyDown={handlePress}
+                      disabled={disableElement}
                     />
                   </InputSec>
                 </FieldSection>
@@ -141,6 +195,8 @@ const LoginPage = () => {
                       placeholder="Enter email"
                       value={loginInfo.email}
                       onChange={handleChange("email")}
+                      onKeyDown={handlePress}
+                      disabled={disableElement}
                     />
                   </InputSec>
                 </FieldSection>
@@ -154,6 +210,8 @@ const LoginPage = () => {
                     placeholder="Enter user id"
                     value={loginInfo.userid}
                     onChange={handleChange("userid")}
+                    onKeyDown={handlePress}
+                    disabled={disableElement}
                   />
                 </InputSec>
               </FieldSection>
@@ -167,11 +225,10 @@ const LoginPage = () => {
                       placeholder="Enter password"
                       value={loginInfo.password}
                       onChange={handleChange("password")}
+                      onKeyDown={handlePress}
+                      disabled={disableElement}
                     />
-                    <button
-                      type="button"
-                      onClick={handleClickShowPassword}
-                    >
+                    <button type="button" onClick={handleClickShowPassword}>
                       <RemoveRedEyeIcon />
                     </button>
                   </InputSec>
@@ -184,17 +241,19 @@ const LoginPage = () => {
                     <input
                       type={loginInfo.showRegpassword ? "text" : "password"}
                       className="form-control mt-1"
-                      placeholder="Enter same password"
+                      placeholder="Enter password"
                       value={loginInfo.regpassword}
                       onChange={handleChange("regpassword")}
+                      onKeyDown={handlePress}
+                      disabled={disableElement}
                     />
-                    <button
-                      type="button"
-                      onClick={handleClickShowRegPassword}
-                    >
+                    <button type="button" onClick={handleClickShowRegPassword}>
                       <RemoveRedEyeIcon />
                     </button>
                   </InputSec>
+                  <PassRegInfo>
+                    *Please given minimum 8 character length password
+                  </PassRegInfo>
                 </FieldSection>
               )}
               {loginType === "register" && (
@@ -207,38 +266,39 @@ const LoginPage = () => {
                       placeholder="Enter same password"
                       value={loginInfo.newpassword}
                       onChange={handleChange("newpassword")}
+                      onKeyDown={handlePress}
+                      disabled={disableElement}
                     />
-                    <button
-                      type="button"
-                      onClick={handleClickShowNewPassword}
-                    >
+                    <button type="button" onClick={handleClickShowNewPassword}>
                       <RemoveRedEyeIcon />
                     </button>
                   </InputSec>
                 </FieldSection>
               )}
-              </InneSecInput>
-              <FieldBtnSection>
-                <SubmitBtn
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={loginAction}
-                >
-                  Submit
-                </SubmitBtn>
-              </FieldBtnSection>
+            </InneSecInput>
+            <FieldBtnSection>
+              <SubmitBtn
+                type="button"
+                className="btn btn-primary"
+                onClick={handleAction}
+                disabled={disableElement}
+              >
+                {disableElement ? (
+                  <CircularProgress size={20} sx={{ color: "#e4e9ed" }} />
+                ) : (
+                  "Submit"
+                )}
+              </SubmitBtn>
+            </FieldBtnSection>
           </FormContent>
           <LoginOption>
-            <ForgetBtn
-              type="button"
-              onClick={handleFP}
-              disabled
-            >
+            <ForgetBtn type="button" onClick={handleFP} disabled>
               Forgot Password ?
             </ForgetBtn>
             <RegisterBtn
               type="button"
               onClick={handleRegister}
+              disabled={disableElement}
             >
               {loginType === "register" ? (
                 <KeyboardDoubleArrowLeftIcon />
@@ -265,12 +325,12 @@ const Compo = styled.div`
 
 const InneSecInput = styled.div`
   width: 100%;
-  height: ${(prop)=>prop.height};
+  height: ${(prop) => prop.height};
   overflow-x: hidden;
   overflow-y: scroll;
   transition: 0.3s;
   @media screen and (max-width: 800px) {
-    height: 40vh;
+    height: 35vh;
   }
 
   @media screen and (min-width: 1440px) {
@@ -282,16 +342,35 @@ const InputSec = styled.div`
   display: flex;
   align-items: center;
   width: 90%;
-  border: 0.1rem solid #000000;
+  border: 1pxrem solid #feffff;
   padding: 0.2rem 0.3rem;
   border-radius: 0.5rem;
   height: 2rem;
+  background: #2e657e;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
   input {
+    font-weight: 600;
     border: none;
     width: 100%;
     outline: none;
     font-family: Arial;
     font-size: 1rem;
+    background: transparent;
+    color: #e4e9ed;
+    &::placeholder {
+      color: #a5b8c7;
+      opacity: 1;
+    }
+
+    &:-ms-input-placeholder {
+      color: #a5b8c7;
+    }
+
+    &::-ms-input-placeholder {
+      color: #a5b8c7;
+    }
   }
 
   button {
@@ -299,6 +378,7 @@ const InputSec = styled.div`
     background: none;
     padding: 0;
     cursor: pointer;
+    color: #e4e9ed;
   }
 `;
 
@@ -332,7 +412,7 @@ const MiddleContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem 2rem 2rem 2rem;
 `;
 
 const Form = styled.form`
@@ -363,7 +443,7 @@ const Label = styled.label`
   font-size: 1rem;
   font-weight: 600;
   color: #000000;
-  margin: 0 0 0.2rem 0;
+  margin: 0 0 0.4rem 0.2rem;
 `;
 
 const FieldSection = styled.div`
@@ -373,13 +453,27 @@ const FieldSection = styled.div`
 `;
 
 const SubmitBtn = styled.button`
-  border: 0.2rem solid #000000;
+  border: 0.1rem solid #bbb6b6;
   border-radius: 1rem;
-  background: none;
   font-size: 1rem;
-  padding: 0.5rem;
+  padding: 0.7rem;
   cursor: pointer;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  background: #2e657e;
+  color: #e4e9ed;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+  height: 3rem;
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  @media screen and (max-width: 480px) {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
 `;
 
 const FieldBtnSection = styled.div`
@@ -394,6 +488,9 @@ const LoginOption = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 1rem 1rem 0 1rem;
+  @media screen and (max-width: 480px) {
+    margin: 2rem 1rem 0 1rem;
+  }
 `;
 
 const ForgetBtn = styled.button`
@@ -405,20 +502,29 @@ const RegisterBtn = styled.button`
   display: flex;
   border: 0.1rem solid #dddada;
   outline: none;
-  background: #6597cb;
+  background: #2e657e;
   font-size: 1rem;
   font-weight: 600;
   font-family: inherit;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
   border-radius: 0.5rem;
-  padding: 0.2rem 0;
+  padding: 0.5rem 0;
   color: #e4e9ed;
   cursor: pointer;
   width: 6rem;
   align-items: center;
   justify-content: center;
   @media screen and (max-width: 480px) {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    padding: 0.4rem 0;
+    width: 5rem;
   }
+`;
+
+const PassRegInfo = styled.span`
+  color: #524f4f;
+  font-size: 0.75rem;
+  margin: 0.2rem 0;
+  font-weight: 500;
 `;
