@@ -184,11 +184,7 @@ export default function ModCard({
 
 const FavBtn = styled.button`
   border: none;
-  background: radial-gradient(
-    circle,
-    rgba(12, 4, 24, 1) 64%,
-    rgba(33, 13, 55, 0.9864320728291317) 100%
-  );
+  background: #2e657e;
   cursor: pointer;
   display: flex;
   align-items: center;

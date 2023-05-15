@@ -10,7 +10,7 @@ export default function SkeletonLoader() {
         <Loader key={`${i}-${index}`}>
           <Skeleton
             sx={{ 
-              bgcolor: "#645e5e",
+              bgcolor: "#578aa1",
               width: "25rem",
               height: "10rem",
               
