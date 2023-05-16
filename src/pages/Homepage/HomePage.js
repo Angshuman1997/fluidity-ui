@@ -27,7 +27,7 @@ const HomePage = () => {
           <TxtContent>
             <span className="large">Make your own drinks at home</span>
             <span className="small">
-              A step by step recepe to make delicious drinks.
+              A step by step recipes to make delicious drinks.
             </span>
             <LetsDrinkBtn
               touched={touched}
