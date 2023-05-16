@@ -8,6 +8,7 @@ import { notificationFunc } from "../../redux/actions/actions";
 import { useDispatch } from "react-redux";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import { CircularProgress } from "@mui/material";
+import { jumbleFunc } from "../../utils/utils";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -42,7 +43,6 @@ const LoginPage = () => {
     });
   };
 
-
   const handleRegister = () => {
     setLoginType(loginType === "register" ? "login" : "register");
     setLoginInfo({
@@ -59,27 +59,36 @@ const LoginPage = () => {
   const handleFP = () => {};
 
   const loginAction = () => {
+
     setDisableElement(true);
+    const mot = process.env.REACT_APP_SECRET_MOTION;
+    const pat =(process.env.REACT_APP_SECRET_PATTERN).split(",");
+
     const formData = new FormData();
+    formData.append("lt", loginType);
+    formData.append("ud", jumbleFunc(loginInfo.userid.trim(), pat, mot));
+    
     if (loginType === "register") {
-      formData.append("userid", loginInfo.userid.trim());
-      formData.append("password", loginInfo.regpassword.trim());
-      formData.append("name", loginInfo.name.trim());
-      formData.append("email", loginInfo.email.trim());
-    } else {
-      formData.append("userid", loginInfo.userid);
-      formData.append("password", loginInfo.password);
+      formData.append("pd", jumbleFunc(loginInfo.regpassword.trim(), pat, mot));
+      formData.append("ne", jumbleFunc(loginInfo.name.trim(), pat, mot));
+      formData.append("el", jumbleFunc(loginInfo.email.trim(), pat, mot));
+    } else{
+      formData.append("pd", jumbleFunc(loginInfo.password.trim(), pat, mot));
     }
-    formData.append("login_type", loginType);
+
     axios
       .post(`${process.env.REACT_APP_API_URI}/login`, formData)
       .then((response) => {
-        loginType !== "register" && sessionStorage.setItem("fludtyTok", response.data.token);
+        loginType !== "register" &&
+          sessionStorage.setItem("fludtyTok", response.data.token);
         dispatch(
           notificationFunc({
             open: true,
             severity: "success",
-            message: loginType === "register" ? "Registration Successful" : "Login Successful",
+            message:
+              loginType === "register"
+                ? "Registration Successful"
+                : "Login Successful",
           })
         );
         loginType === "register" ? navigate("/login") : navigate("/main");
@@ -91,7 +100,7 @@ const LoginPage = () => {
           notificationFunc({
             open: true,
             severity: "error",
-            message: error.response.data.Message,
+            message: error.response.data.Message || error.message,
           })
         );
         setDisableElement(false);
@@ -110,7 +119,8 @@ const LoginPage = () => {
       if (
         loginInfo.userid !== "" &&
         loginInfo.email !== "" &&
-        loginInfo.name !== "" && loginInfo.regpassword.length >= 8
+        loginInfo.name !== "" &&
+        loginInfo.regpassword.length >= 8
       ) {
         loginAction();
       } else {
@@ -170,7 +180,10 @@ const LoginPage = () => {
                       onChange={handleChange("name")}
                       onKeyDown={handlePress}
                       disabled={disableElement}
-                      style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
+                      style={{
+                        cursor: disableElement ? "not-allowed" : "pointer",
+                        opacity: disableElement ? 0.5 : 1,
+                      }}
                     />
                   </InputSec>
                 </FieldSection>
@@ -187,7 +200,10 @@ const LoginPage = () => {
                       onChange={handleChange("email")}
                       onKeyDown={handlePress}
                       disabled={disableElement}
-                      style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
+                      style={{
+                        cursor: disableElement ? "not-allowed" : "pointer",
+                        opacity: disableElement ? 0.5 : 1,
+                      }}
                     />
                   </InputSec>
                 </FieldSection>
@@ -203,7 +219,10 @@ const LoginPage = () => {
                     onChange={handleChange("userid")}
                     onKeyDown={handlePress}
                     disabled={disableElement}
-                    style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
+                    style={{
+                      cursor: disableElement ? "not-allowed" : "pointer",
+                      opacity: disableElement ? 0.5 : 1,
+                    }}
                   />
                 </InputSec>
               </FieldSection>
@@ -219,7 +238,10 @@ const LoginPage = () => {
                       onChange={handleChange("password")}
                       onKeyDown={handlePress}
                       disabled={disableElement}
-                      style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
+                      style={{
+                        cursor: disableElement ? "not-allowed" : "pointer",
+                        opacity: disableElement ? 0.5 : 1,
+                      }}
                     />
                     <button type="button" onClick={handleClickShowPassword}>
                       <RemoveRedEyeIcon />
@@ -239,7 +261,10 @@ const LoginPage = () => {
                       onChange={handleChange("regpassword")}
                       onKeyDown={handlePress}
                       disabled={disableElement}
-                      style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
+                      style={{
+                        cursor: disableElement ? "not-allowed" : "pointer",
+                        opacity: disableElement ? 0.5 : 1,
+                      }}
                     />
                     <button type="button" onClick={handleClickShowRegPassword}>
                       <RemoveRedEyeIcon />
@@ -257,7 +282,10 @@ const LoginPage = () => {
                 className="btn btn-primary"
                 onClick={handleAction}
                 disabled={disableElement}
-                style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
+                style={{
+                  cursor: disableElement ? "not-allowed" : "pointer",
+                  opacity: disableElement ? 0.5 : 1,
+                }}
               >
                 {disableElement ? (
                   <CircularProgress size={20} sx={{ color: "#e4e9ed" }} />
@@ -275,7 +303,10 @@ const LoginPage = () => {
               type="button"
               onClick={handleRegister}
               disabled={disableElement}
-              style={{cursor: disableElement ? "not-allowed" : "pointer", opacity: disableElement ? 0.5 : 1}}
+              style={{
+                cursor: disableElement ? "not-allowed" : "pointer",
+                opacity: disableElement ? 0.5 : 1,
+              }}
             >
               {loginType === "register" ? (
                 <KeyboardDoubleArrowLeftIcon />
