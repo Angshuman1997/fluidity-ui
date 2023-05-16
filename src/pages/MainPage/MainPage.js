@@ -277,7 +277,7 @@ const MainPage = () => {
                   <FavoriteIcon />
                 )}
               </SortByFavBtn>
-              <PopoverComp placement={"top"} />
+              <PopoverComp />
               <SearchFeaBtn onClick={handleOpenSearchBar}>
                 <SearchIcon />
               </SearchFeaBtn>

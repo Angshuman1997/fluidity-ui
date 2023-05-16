@@ -1,59 +1,71 @@
 import * as React from "react";
 import Typography from "@mui/material/Typography";
-import Popper from "@mui/material/Popper";
-import PopupState, { bindToggle, bindPopper } from "material-ui-popup-state";
-import Fade from "@mui/material/Fade";
 import Paper from "@mui/material/Paper";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { styled } from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
+import Popover from "@mui/material/Popover";
 
-export default function PopoverComp({ placement = "bottom-end" }) {
+export default function PopoverComp() {
   const { userCreds } = useSelector((state) => state);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   return (
-    <PopupState variant="popper" popupId="demo-popup-popper">
-      {(popupState) => (
-        <div>
-          <AccButton {...bindToggle(popupState)}>
-            <AccountCircleIcon sx={{ width: "2rem", height: "2rem" }} />
-          </AccButton>
-          <Popper {...bindPopper(popupState)} placement={placement} transition>
-            {({ TransitionProps }) => (
-              <Fade {...TransitionProps} timeout={350}>
-                <Paper>
-                  <CloseBtnSec>
-                    <CloseBtn {...bindToggle(popupState)}>
-                      <CloseIcon />
-                    </CloseBtn>
-                  </CloseBtnSec>
-                  <Typography sx={{ padding: "0 1rem 1rem 1rem" }}>
-                    <InnerContent>
-                      <SubSec>
-                        <SubSec1>Name</SubSec1>
-                        <span>:</span>
-                        <SubSec2>{userCreds.name}</SubSec2>
-                      </SubSec>
-                      <SubSec>
-                        <SubSec1>Userid</SubSec1>
-                        <span>:</span>
-                        <SubSec2>{userCreds.userid}</SubSec2>
-                      </SubSec>
-                      <SubSec>
-                        <SubSec1>Email</SubSec1>
-                        <span>:</span>
-                        <SubSec2>{userCreds.email}</SubSec2>
-                      </SubSec>
-                    </InnerContent>
-                  </Typography>
-                </Paper>
-              </Fade>
-            )}
-          </Popper>
-        </div>
-      )}
-    </PopupState>
+    <div>
+      <AccButton onClick={handleClick}>
+        <AccountCircleIcon sx={{ width: "2rem", height: "2rem" }} />
+      </AccButton>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        <Paper>
+          <CloseBtnSec>
+            <CloseBtn onClick={handleClose}>
+              <CloseIcon />
+            </CloseBtn>
+          </CloseBtnSec>
+          <Typography sx={{ padding: "0 1rem 1rem 1rem" }}>
+            <InnerContent>
+              <SubSec>
+                <SubSec1>Name</SubSec1>
+                <span>:</span>
+                <SubSec2>{userCreds.name}</SubSec2>
+              </SubSec>
+              <SubSec>
+                <SubSec1>Userid</SubSec1>
+                <span>:</span>
+                <SubSec2>{userCreds.userid}</SubSec2>
+              </SubSec>
+              <SubSec>
+                <SubSec1>Email</SubSec1>
+                <span>:</span>
+                <SubSec2>{userCreds.email}</SubSec2>
+              </SubSec>
+            </InnerContent>
+          </Typography>
+        </Paper>
+      </Popover>
+    </div>
   );
 }
 
@@ -85,7 +97,7 @@ const AccButton = styled.button`
   border: none;
   cursor: pointer;
   @media screen and (max-width: 500px) {
-    svg{
+    svg {
       width: 2.5rem;
       height: 2.5rem;
     }
