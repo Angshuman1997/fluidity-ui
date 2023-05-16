@@ -21,6 +21,9 @@ const HomePage = () => {
       </TopContent>
       <MiddleContent>
         <MContent>
+          <BannerImage>
+            <img src={bannerImg} alt="banner" />
+          </BannerImage>
           <TxtContent>
             <span className="large">Make your own drinks at home</span>
             <span className="small">
@@ -37,9 +40,6 @@ const HomePage = () => {
               <span>Let's Drink !!!</span>
             </LetsDrinkBtn>
           </TxtContent>
-          <BannerImage>
-            <img src={bannerImg} alt="banner" />
-          </BannerImage>
         </MContent>
       </MiddleContent>
     </Compo>
@@ -109,7 +109,7 @@ const LetsDrinkBtn = styled.button`
   @media screen and (max-width: 480px) {
     width: 7rem;
     height: 2rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
   }
   @media screen and (min-width: 1500px) {
     width: 15rem;
@@ -137,11 +137,16 @@ const LetsDrinkBtn = styled.button`
 const MContent = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin: 0 1rem 0 2rem;
   column-gap: 5%;
   @media screen and (max-width: 480px) {
-    margin: 0 0 0 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    gap: 2rem;
+    margin: 0;
+    margin: 3rem 0 0 0;
   }
 
   @media screen and (max-width: 300px) {
@@ -152,12 +157,18 @@ const MContent = styled.div`
 const TxtContent = styled.div`
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 480px) {
+    align-items: center;
+    justify-content: center;
+  }
+
   span.large {
     font-weight: 600;
     font-size: 3rem;
     padding: 0 0 1rem 0;
     @media screen and (max-width: 480px) {
       font-size: 1rem;
+      padding: 0;
     }
 
     @media screen and (min-width: 1500px) {

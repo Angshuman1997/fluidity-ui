@@ -337,13 +337,20 @@ const InneSecInput = styled.div`
   overflow-x: hidden;
   overflow-y: scroll;
   transition: 0.3s;
-  @media screen and (max-width: 800px) {
-    height: 35vh;
-  }
 
   @media screen and (min-width: 1440px) {
     height: 100%;
   }
+
+  @media screen and (max-width: 800px) {
+    height: ${(prop) => prop.height === "54vh" ? "35vh" : prop.height === "30vh" ? "30vh" : "100%"};
+  }
+
+  @media screen and (max-width: 480px) {
+    height: ${(prop) => prop.height === "30vh" ? "30vh" : "35vh"};
+  }
+
+ 
 `;
 
 const InputSec = styled.div`
@@ -523,6 +530,7 @@ const RegisterBtn = styled.button`
   width: 6rem;
   align-items: center;
   justify-content: center;
+  height: 3rem;
   @media screen and (max-width: 480px) {
     font-size: 0.9rem;
     padding: 0.4rem 0;
