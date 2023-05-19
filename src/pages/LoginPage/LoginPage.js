@@ -77,7 +77,7 @@ const LoginPage = () => {
     }
 
     axios
-      .post(`${process.env.REACT_APP_API_URI}/login`, formData)
+      .post(`${process.env.REACT_APP_API_URI}/${loginType}`, formData)
       .then((response) => {
         loginType !== "register" &&
           sessionStorage.setItem("fludtyTok", response.data.token);
