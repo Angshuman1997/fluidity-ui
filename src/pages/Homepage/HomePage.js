@@ -16,7 +16,7 @@ const HomePage = () => {
           <span className="logo">
             <BiDrink size={30} />
           </span>
-          <span className="text">FluDtY</span>
+          <span className="text">FluIditY</span>
         </LogoTxt>
       </TopContent>
       <MiddleContent>
